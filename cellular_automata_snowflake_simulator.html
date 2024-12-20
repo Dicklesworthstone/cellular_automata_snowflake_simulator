@@ -1,0 +1,2722 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Advanced Probabilistic Snowflake Crystal Growth Simulator</title>
+
+    <meta charset="UTF-8" />
+    <meta
+      name="description"
+      content="The goal of this page is to offer a high-performance snowflake formation simulation that actually makes images that look like REAL snowflakes, with the real world diversity and features of actual snowflakes!"
+    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
+    <style>
+      body {
+        background: radial-gradient(circle at center, #1a237e, #0d47a1, #01579b);
+        overflow-x: hidden;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1f2937;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #374151;
+        border-radius: 4px;
+      }
+      .datgui-reset .dg {
+        z-index: 9999 !important;
+      }
+      canvas {
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+      }
+      .snowflake-canvas {
+        transition: transform 0.3s ease-out;
+        will-change: transform;
+        backface-visibility: hidden;
+        transform: translateZ(0);
+        background: rgba(17, 24, 39, 0.95);
+      }
+      .glow-effect {
+        filter: drop-shadow(0 0 12px rgba(147, 197, 253, 0.6));
+      }
+      .snowflake-canvas:hover {
+        transform: scale(1.05);
+      }
+      .floating {
+        animation: float 6s ease-in-out infinite;
+      }
+      .background-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+    </style>
+  </head>
+  <body class="text-white min-h-screen p-8 datgui-reset">
+    <canvas id="backgroundParticles" class="background-particles"></canvas>
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12 floating">
+        <h1 class="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-indigo-200 glow-effect">
+          Advanced Probabilistic Snowflake Growth Simulator
+        </h1>
+        <p class="text-blue-200 opacity-80">Physics-based simulation with probabilistic crystallization, defects, and air flow</p>
+      </div>
+      <div class="bg-gray-800 bg-opacity-30 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-blue-500/10">
+        <div class="mb-8 bg-gray-900 bg-opacity-50 rounded-xl p-6">
+          <div class="flex flex-wrap items-center gap-6 mb-4">
+            <button
+              id="playPauseBtn"
+              class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-blue-500/20"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Play
+            </button>
+            <button
+              id="resetBtn"
+              class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-red-500/20"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              Reset
+            </button>
+            <button
+              id="shuffleBtn"
+              class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-purple-500/20"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+              Shuffle
+            </button>
+            <div id="stepCounter" class="text-xl font-mono bg-gray-800 px-4 py-2 rounded-lg shadow-inner">Step: 0 / 1000</div>
+            <div class="relative">
+              <select id="resolutionSelect" class="w-full bg-gray-700 text-white px-3 py-1.5 rounded-lg appearance-none cursor-pointer text-sm">
+                <option value="301" selected>301×301</option>
+                <option value="401">401×401</option>
+                <option value="501">501×501</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="1000"
+            value="0"
+            class="w-full h-3 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            id="timeSlider"
+          />
+        </div>
+        <div class="flex justify-center">
+          <canvas id="snowflakeCanvas" class="snowflake-canvas aspect-square rounded-xl shadow-lg"></canvas>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Constants and utility functions
+      const PHYSICAL_CONSTANTS = {
+        WATER_LATENT_HEAT: 2.83e6, // J/kg
+        WATER_VAPOR_DIFFUSIVITY: 2.0e-5, // m²/s
+        ICE_SURFACE_ENERGY: 0.109, // J/m²
+        WATER_MOLECULAR_MASS: 18.015e-3, // kg/mol
+        GAS_CONSTANT: 8.314, // J/(mol·K)
+        ABSOLUTE_ZERO: 273.15, // K
+        STEFAN_BOLTZMANN: 5.67e-8, // W/(m²·K⁴)
+        ICE_THERMAL_CONDUCTIVITY: 2.18, // W/(m·K)
+        ICE_DENSITY: 916.7, // kg/m³
+        AIR_VISCOSITY: 1.81e-5, // Pa·s
+        AIR_THERMAL_CONDUCTIVITY: 0.024, // W/(m·K)
+        CRITICAL_REYNOLDS: 2300,
+        PRANDTL_NUMBER: 0.71,
+        SCHMIDT_NUMBER: 0.63,
+        AIR_DENSITY: 1.225,
+        MIN_TIME_STEP: 1e-6,
+        MAX_TIME_STEP: 1e-2,
+        MAX_ITERATIONS: 50,
+        CONVERGENCE_THRESHOLD: 1e-6,
+      };
+
+      class TypedArrayPool {
+        constructor(size, type = Float32Array, maxPoolSize = 100) {
+          this.size = size;
+          this.type = type;
+          this.maxPoolSize = maxPoolSize;
+          this.pool = [];
+        }
+
+        acquire() {
+          return this.pool.pop() || new this.type(this.size);
+        }
+
+        release(array) {
+          if (array && this.pool.length < this.maxPoolSize) {
+            array.fill(0);
+            this.pool.push(array);
+          }
+        }
+
+        clear() {
+          this.pool.length = 0;
+        }
+      }
+
+      class CrystalDirectionSystem {
+        constructor() {
+          this.primaryAngles = [0, 60, 120, 180, 240, 300].map((a) => (a * Math.PI) / 180);
+          this.secondaryAngles = [30, 90, 150, 210, 270, 330].map((a) => (a * Math.PI) / 180);
+          this.tertiaryAngles = Array.from({ length: 72 }, (_, i) => (i * 5 * Math.PI) / 180);
+          this.setupAnisotropyTables();
+        }
+
+        setupAnisotropyTables() {
+          this.surfaceEnergy = new Float32Array(360);
+          this.attachmentCoefficient = new Float32Array(360);
+
+          for (let i = 0; i < 360; i++) {
+            const angle = (i * Math.PI) / 180;
+
+            this.surfaceEnergy[i] =
+              1.0 +
+              0.8 * Math.cos(6 * angle) + // Increased coefficient for stronger 6-fold symmetry
+              0.2 * Math.cos(12 * angle) +
+              0.05 * Math.cos(18 * angle) +
+              0.02 * Math.cos(24 * angle) +
+              0.01 * Math.cos(30 * angle);
+
+            this.attachmentCoefficient[i] = Math.max(
+              0.01,
+              0.1 *
+                (1.0 +
+                  1.2 * Math.cos(6 * angle) + // Increased coefficient
+                  0.4 * Math.cos(12 * angle) +
+                  0.1 * Math.cos(18 * angle))
+            );
+          }
+        }
+
+        getGrowthProbability(angle, temperature, stress) {
+          const normalizedAngle = (((angle + Math.PI) * 180) / Math.PI) % 360;
+          const idx = Math.floor(normalizedAngle);
+
+          let probability = 0;
+          if (temperature < -20) {
+            probability = 0.8 * this.attachmentCoefficient[idx] * (1 - 0.3 * Math.abs(stress));
+          } else if (temperature < -10) {
+            probability = this.attachmentCoefficient[idx] * (1 + 0.5 * Math.sin(angle * 6)) * (1 - 0.2 * Math.abs(stress));
+          } else {
+            probability = 0.6 * this.attachmentCoefficient[idx] * (1 + 0.3 * Math.cos(angle * 6)) * (1 - 0.1 * Math.abs(stress));
+          }
+
+          probability *= 2 - this.surfaceEnergy[idx];
+          return Math.max(0, Math.min(1, probability));
+        }
+      }
+
+      class BoundaryLayer {
+        constructor(size) {
+          console.log('Initializing BoundaryLayer with size:', size);
+          this.size = size;
+          this.thickness = new Float32Array(size * size);
+          this.velocity = new Float32Array(size * size);
+          this.temperature = new Float32Array(size * size);
+          this.concentration = new Float32Array(size * size);
+          this.shearStress = new Float32Array(size * size);
+          this.momentumThickness = new Float32Array(size * size);
+          this.displacementThickness = new Float32Array(size * size);
+          this.cacheValid = new Uint8Array(size * size);
+          console.log('BoundaryLayer initialization complete');
+        }
+
+        update(crystallization, airFlow, temperature, vapor) {
+          const nu = PHYSICAL_CONSTANTS.AIR_VISCOSITY / PHYSICAL_CONSTANTS.AIR_DENSITY;
+          const Pr = PHYSICAL_CONSTANTS.PRANDTL_NUMBER;
+          const Sc = PHYSICAL_CONSTANTS.SCHMIDT_NUMBER;
+
+          for (let i = 0; i < this.size * this.size; i++) {
+            if (crystallization[i] <= 0.5) {
+              this.cacheValid[i] = 0;
+              continue;
+            }
+
+            const r = Math.floor(i / this.size);
+            const c = i % this.size;
+
+            const vx = airFlow.vx[i] || 0;
+            const vy = airFlow.vy[i] || 0;
+            const velocity = Math.sqrt(vx * vx + vy * vy);
+
+            if (velocity < 1e-6) {
+              this.cacheValid[i] = 0;
+              continue;
+            }
+
+            const characteristic_length = 100e-6;
+            const reynolds = Math.max(1e-6, (velocity * characteristic_length) / nu);
+
+            if (reynolds < PHYSICAL_CONSTANTS.CRITICAL_REYNOLDS) {
+              this.thickness[i] = 5.0 * Math.sqrt((nu * characteristic_length) / velocity);
+              this.momentumThickness[i] = (0.664 * this.thickness[i]) / Math.sqrt(reynolds);
+              this.displacementThickness[i] = 1.721 * this.momentumThickness[i];
+            } else {
+              this.thickness[i] = (0.37 * characteristic_length) / Math.pow(reynolds, 0.2);
+              this.momentumThickness[i] = (0.036 * characteristic_length) / Math.pow(reynolds, 0.2);
+              this.displacementThickness[i] = 1.3 * this.momentumThickness[i];
+            }
+
+            const y_plus = Math.min(30, (this.thickness[i] * velocity) / nu);
+            this.velocity[i] = velocity * (1 - Math.exp(-y_plus / 5));
+
+            const thermal_thickness = this.thickness[i] * Math.pow(Pr, -1 / 3);
+            const T_wall = temperature[i];
+            const T_inf = temperature[i] + 5;
+            this.temperature[i] = T_wall + (T_inf - T_wall) * (1 - Math.exp((-3 * thermal_thickness) / this.thickness[i]));
+
+            const concentration_thickness = this.thickness[i] * Math.pow(Sc, -1 / 3);
+            const c_ratio = concentration_thickness / this.thickness[i];
+            this.concentration[i] = vapor[i] * (1 - Math.exp(-3 * c_ratio));
+
+            if (reynolds < PHYSICAL_CONSTANTS.CRITICAL_REYNOLDS) {
+              this.shearStress[i] = Math.max(0, (0.332 * PHYSICAL_CONSTANTS.AIR_VISCOSITY * velocity * Math.sqrt(reynolds)) / characteristic_length);
+            } else {
+              const cf = 0.0592 / Math.pow(reynolds, 0.2);
+              this.shearStress[i] = Math.max(0, 0.5 * PHYSICAL_CONSTANTS.AIR_DENSITY * velocity * velocity * cf);
+            }
+            this.cacheValid[i] = 1;
+          }
+        }
+
+        getBoundaryLayerProperties(idx) {
+          return {
+            thickness: this.thickness[idx],
+            velocity: this.velocity[idx],
+            temperature: this.temperature[idx],
+            concentration: this.concentration[idx],
+            shearStress: this.shearStress[idx],
+            momentumThickness: this.momentumThickness[idx],
+            displacementThickness: this.displacementThickness[idx],
+          };
+        }
+      }
+
+      class SurfaceKinetics {
+        constructor(size) {
+          this.size = size;
+          this.attachmentRate = new Float32Array(size * size);
+          this.surfaceEnergy = new Float32Array(size * size);
+          this.mobilityFactor = new Float32Array(size * size);
+          this.nucleationBarrier = new Float32Array(size * size);
+          this.surfaceStress = new Float32Array(size * size);
+          this.setupAnisotropy();
+        }
+
+        setupAnisotropy() {
+          this.anisotropyTable = new Float32Array(360);
+          this.mobilityTable = new Float32Array(360);
+          this.nucleationTable = new Float32Array(360);
+
+          for (let i = 0; i < 360; i++) {
+            const angle = (i * Math.PI) / 180;
+
+            // Surface energy anisotropy with hexagonal symmetry
+            this.anisotropyTable[i] = Math.max(
+              0.1,
+              1.0 +
+                0.5 * Math.cos(6 * angle) +
+                0.1 * Math.cos(12 * angle) +
+                0.05 * Math.cos(18 * angle) +
+                0.02 * Math.cos(24 * angle) +
+                0.01 * Math.sin(30 * angle)
+            );
+
+            // Mobility anisotropy with crystallographic preferences
+            this.mobilityTable[i] = Math.max(
+              0.01,
+              0.1 + 0.8 * Math.abs(Math.cos(3 * angle)) + 0.2 * Math.abs(Math.cos(6 * angle)) + 0.1 * Math.abs(Math.sin(9 * angle))
+            );
+
+            // Nucleation preference with hexagonal symmetry
+            this.nucleationTable[i] = Math.max(0.1, 1.0 + 0.3 * Math.cos(6 * angle) + 0.1 * Math.cos(12 * angle) + 0.05 * Math.sin(18 * angle));
+          }
+        }
+
+        calculateAttachmentRate(idx, temperature, supersaturation, angle, stress) {
+          // Input validation
+          if (idx < 0 || idx >= this.size * this.size) return 0;
+          if (!isFinite(temperature) || !isFinite(supersaturation) || !isFinite(angle) || !isFinite(stress)) return 0;
+          if (Math.abs(stress) > 10) return 0; // Additional validation for extreme stress values
+
+          try {
+            // Convert temperature to Kelvin and calculate angle index
+            const T = Math.max(PHYSICAL_CONSTANTS.ABSOLUTE_ZERO, temperature + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO);
+            const angleDeg = (((angle + Math.PI) * 180) / Math.PI) % 360;
+            const angleIdx = Math.floor(angleDeg);
+
+            // Validate angle index
+            if (angleIdx < 0 || angleIdx >= 360 || !this.anisotropyTable[angleIdx]) {
+              console.warn(`Invalid angle index: ${angleIdx} for cell ${idx}`);
+              return 0;
+            }
+
+            // Calculate surface energy with temperature dependence
+            const surfaceTempFactor = Math.max(0.5, Math.min(1.5, 1 - (0.1 * (T - PHYSICAL_CONSTANTS.ABSOLUTE_ZERO)) / 273.15));
+            const gamma = PHYSICAL_CONSTANTS.ICE_SURFACE_ENERGY * this.anisotropyTable[angleIdx] * surfaceTempFactor;
+
+            // Thermal energy scale with bounds checking
+            const kT = Math.max(1e-10, (PHYSICAL_CONSTANTS.GAS_CONSTANT * T) / PHYSICAL_CONSTANTS.WATER_MOLECULAR_MASS);
+
+            // Activation energy with stress dependence
+            const baseActivationEnergy = 5.5e3;
+            const stressEffect = Math.max(0.5, Math.min(1.5, 1 + 0.1 * Math.abs(stress)));
+            const activation_energy = baseActivationEnergy * stressEffect;
+            
+            // Calculate beta with bounds
+            const beta = Math.max(1e-10, Math.exp(-activation_energy / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)));
+
+            // Mobility with temperature and stress dependence
+            const tempMobility = Math.max(1e-10, Math.exp(-2e3 / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)));
+            const stressMobility = Math.max(1e-10, Math.exp(-Math.abs(stress)));
+            const mobility = this.mobilityTable[angleIdx] * tempMobility * stressMobility;
+
+            // Nucleation factor with surface energy and stress
+            const energyFactor = Math.max(1e-10, Math.exp(-gamma / (kT * T)));
+            const stressNucleation = Math.max(0.1, 1 - 0.2 * Math.abs(stress));
+            const nucleation_factor = this.nucleationTable[angleIdx] * energyFactor * stressNucleation;
+
+            // Temperature-dependent attachment coefficient
+            let alpha;
+            if (temperature < -10) {
+              alpha = Math.min(1.0, 0.1 * (1 + Math.exp((temperature + 10) / 5)));
+            } else {
+              alpha = Math.min(1.0, 0.01 * (1 + Math.exp(-temperature / 10)));
+            }
+            alpha = Math.max(0.001, alpha); // Ensure minimum attachment probability
+
+            // Calculate final rate with improved supersaturation handling
+            const supersaturationEffect = Math.max(-1, Math.min(10, supersaturation));
+            const combinedRate = alpha * beta * mobility * nucleation_factor * (1 + supersaturationEffect);
+            const rate = Math.max(0, Math.min(1, combinedRate));
+
+            // Store results for later use (with validation)
+            if (isFinite(rate)) {
+              this.attachmentRate[idx] = rate;
+              this.surfaceEnergy[idx] = gamma;
+              this.mobilityFactor[idx] = mobility;
+              this.nucleationBarrier[idx] = nucleation_factor;
+              this.surfaceStress[idx] = stress;
+            } else {
+              console.warn(`Invalid rate calculated for cell ${idx}: ${rate}`);
+              return 0;
+            }
+
+            return rate;
+          } catch (error) {
+            console.warn(`Error calculating attachment rate for cell ${idx}:`, error);
+            return 0;
+          }
+        }
+    };
+
+      class VaporField {
+        constructor(size) {
+          console.log('Initializing VaporField with size:', size);
+          this.size = size;
+          this.field = new Float32Array(size * size);
+          this.diffusionRate = 0.1;
+          this.localPressure = new Float32Array(size * size);
+          this.saturationRatio = new Float32Array(size * size);
+          this.vaporGradient = {
+            x: new Float32Array(size * size),
+            y: new Float32Array(size * size),
+          };
+          this.setupBoundaryConditions();
+          console.log('VaporField initialization complete');
+        }
+
+        setupBoundaryConditions() {
+          const center = Math.floor(this.size / 2);
+
+          for (let i = 0; i < this.size * this.size; i++) {
+            const r = Math.floor(i / this.size);
+            const c = i % this.size;
+            const dr = r - center;
+            const dc = c - center;
+            const dist = Math.sqrt(dr * dr + dc * dc);
+
+            const base_supersaturation = Math.max(1.0, 1.0 + 0.5 * (dist / this.size) + 0.1 * Math.sin(dist / 10));
+
+            const turbulence = 0.1 * (2 * Math.random() - 1) * Math.exp(-dist / (this.size / 4));
+
+            this.field[i] = Math.max(0, base_supersaturation * (1 + turbulence));
+
+            const altitude_factor = 1 - 0.0001 * dist;
+            this.localPressure[i] = Math.max(0, 101325 * altitude_factor * (1 + 0.01 * turbulence));
+          }
+        }
+
+        updateSaturationConditions(temperature) {
+          for (let i = 0; i < this.size * this.size; i++) {
+            const T = Math.max(PHYSICAL_CONSTANTS.ABSOLUTE_ZERO, temperature[i] + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO);
+
+            const P_sat = Math.max(1, 611.2 * Math.exp((17.62 * temperature[i]) / (243.12 + Math.max(-50, Math.min(50, temperature[i])))));
+
+            this.saturationRatio[i] = Math.max(0, (this.localPressure[i] * this.field[i]) / P_sat);
+          }
+        }
+
+        calculateVaporGradients() {
+          const center = Math.floor(this.size / 2);
+
+          for (let r = 0; r < this.size; r++) {
+            for (let c = 0; c < this.size; c++) {
+              const i = r * this.size + c;
+
+              let dx = 0,
+                dy = 0;
+
+              if (c > 0 && c < this.size - 1) {
+                dx = (this.field[i + 1] - this.field[i - 1]) / 2;
+              }
+
+              if (r > 0 && r < this.size - 1) {
+                dy = (this.field[i + this.size] - this.field[i - this.size]) / 2;
+              }
+
+              this.vaporGradient.x[i] = dx;
+              this.vaporGradient.y[i] = dy;
+            }
+          }
+        }
+
+        update(crystallization, temperature, airFlow) {
+          console.log('Updating vapor field');
+          const newField = new Float32Array(this.size * this.size);
+          this.updateSaturationConditions(temperature);
+          this.calculateVaporGradients();
+
+          for (let i = 0; i < this.size * this.size; i++) {
+            const r = Math.floor(i / this.size);
+            const c = i % this.size;
+
+            if (crystallization[i] > 0.5) {
+              newField[i] = Math.max(0, this.field[i] * 0.1);
+              continue;
+            }
+
+            let flux = 0;
+            let weight_sum = 0;
+
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                const nr = r + dr;
+                const nc = c + dc;
+
+                if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
+                  const nidx = nr * this.size + nc;
+
+                  if (crystallization[nidx] < 0.5) {
+                    const D_eff = PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY * (1 + 0.1 * Math.abs(temperature[i]));
+
+                    const delta = Math.sqrt(dr * dr + dc * dc);
+                    const diff_flux = (D_eff * (this.field[nidx] - this.field[i])) / Math.max(delta, 1e-6);
+
+                    const vx = Math.min(1, Math.max(-1, airFlow.vx[i]));
+                    const vy = Math.min(1, Math.max(-1, airFlow.vy[i]));
+                    const adv_flux = (vx * dr + vy * dc) * this.field[nidx];
+
+                    const weight = 1 / (delta + 1e-6);
+                    flux += (diff_flux + adv_flux) * weight;
+                    weight_sum += weight;
+                  }
+                }
+              }
+            }
+
+            if (weight_sum > 0) {
+              newField[i] = Math.max(0, Math.min(5, this.field[i] + (this.diffusionRate * flux) / weight_sum));
+            } else {
+              newField[i] = this.field[i];
+            }
+          }
+
+          this.field = newField;
+        }
+      }
+
+      class DepositionPhysics {
+        constructor(size) {
+          console.log('Initializing DepositionPhysics with size:', size);
+          this.size = size;
+
+          // Initialize all required components
+          this.boundaryLayer = new BoundaryLayer(size);
+          this.surfaceKinetics = new SurfaceKinetics(size);
+          this.vaporField = new VaporField(size);
+          this.heatTransfer = new Float32Array(size * size);
+          this.massTransfer = new Float32Array(size * size);
+          this.localReynolds = new Float32Array(size * size);
+
+          // Initialize lookup tables
+          this.setupLookupTables();
+
+          // Set constants
+          this.maxDepositionRate = 0.1;
+          this.minTemperature = -50;
+          this.maxTemperature = 50;
+
+          console.log('DepositionPhysics initialization complete');
+        }
+
+        setupLookupTables() {
+          console.log('Setting up lookup tables');
+          this.saturationPressure = new Float32Array(1000);
+          this.saturationDensity = new Float32Array(1000);
+          this.diffusionCoefficient = new Float32Array(1000);
+
+          for (let i = 0; i < 1000; i++) {
+            const T = i / 10 - 50 + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO;
+            const temp = Math.max(-50, Math.min(50, i / 10 - 50));
+
+            this.saturationPressure[i] = Math.max(1, 611.2 * Math.exp((17.62 * temp) / (243.12 + temp)));
+
+            this.saturationDensity[i] = Math.max(
+              1e-6,
+              (this.saturationPressure[i] * PHYSICAL_CONSTANTS.WATER_MOLECULAR_MASS) / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)
+            );
+
+            this.diffusionCoefficient[i] = Math.max(1e-6, PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY * Math.pow(T / 273.15, 1.5));
+          }
+        }
+
+        calculateDepositionRate(idx, vapor, temperature, airFlow, crystallization, stress) {
+          // Validate inputs
+          if (idx < 0 || idx >= this.size * this.size) {
+            console.warn('Invalid cell index:', idx);
+            return 0;
+          }
+
+          // Don't calculate for fully crystallized cells
+          if (crystallization[idx] > 0.95) {
+            return 0;
+          }
+
+          // Check if cell has any crystallized neighbors
+          const r = Math.floor(idx / this.size);
+          const c = idx % this.size;
+          let hasActiveCrystalNeighbor = false;
+          
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              const nr = r + dr;
+              const nc = c + dc;
+              if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
+                const nidx = nr * this.size + nc;
+                if (crystallization[nidx] > 0.5) {
+                  hasActiveCrystalNeighbor = true;
+                  break;
+                }
+              }
+            }
+            if (hasActiveCrystalNeighbor) break;
+          }
+
+          // Only allow deposition next to existing crystal
+          if (!hasActiveCrystalNeighbor) {
+            return 0;
+          }
+
+          try {
+            // Update boundary layer if needed
+            if (!this.boundaryLayer.cacheValid[idx]) {
+              this.boundaryLayer.update(crystallization, airFlow, temperature, vapor);
+            }
+
+            // Calculate temperature-dependent properties
+            const T = Math.max(this.minTemperature, Math.min(this.maxTemperature, temperature[idx]));
+            const Tidx = Math.min(999, Math.max(0, Math.floor((T + 50) * 10)));
+            const psat = this.saturationPressure[Tidx];
+            const supersaturation = Math.max(-1, Math.min(10, vapor[idx] / psat - 1));
+
+            // Get boundary layer properties
+            const bl_props = this.boundaryLayer.getBoundaryLayerProperties(idx);
+            const D_eff = Math.max(1e-10, this.diffusionCoefficient[Tidx]);
+            const h_m = Math.max(1e-10, D_eff / Math.max(1e-6, bl_props.concentration));
+
+            // Calculate attachment kinetics
+            const center = Math.floor(this.size / 2);
+            const angle = Math.atan2(r - center, c - center);
+            const attachment_rate = this.surfaceKinetics.calculateAttachmentRate(idx, T, supersaturation, angle, stress);
+
+            // Calculate deposition rate components
+            const diffusion_resistance = Math.max(1e-10, 1 / h_m);
+            const kinetic_resistance = Math.max(1e-10, 1 / Math.max(1e-10, attachment_rate));
+
+            // Apply stability factors
+            const stability = Math.max(0.1, 1.0 - 0.5 * Math.abs(stress));
+            const curvature = 1.0 - 0.2 * this.calculateLocalCurvature(idx, crystallization);
+
+            // Calculate final deposition rate with hexagonal anisotropy
+            const baseRate = 1.0 / (diffusion_resistance + kinetic_resistance);
+            const anglePreference = Math.abs(Math.cos(3 * angle)); // Hexagonal symmetry
+            const anisotropicRate = baseRate * stability * curvature * (0.5 + 0.5 * anglePreference);
+
+            return Math.min(this.maxDepositionRate, Math.max(0, anisotropicRate));
+          } catch (error) {
+            console.error('Error in deposition rate calculation:', error);
+            return 0;
+          }
+        }
+
+        calculateLocalCurvature(idx, crystallization) {
+          const r = Math.floor(idx / this.size);
+          const c = idx % this.size;
+          let sum = 0;
+          let count = 0;
+
+          // Calculate average crystallization difference with neighbors
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              if (dr === 0 && dc === 0) continue;
+              const nr = r + dr;
+              const nc = c + dc;
+              if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
+                const nidx = nr * this.size + nc;
+                sum += Math.abs(crystallization[nidx] - crystallization[idx]);
+                count++;
+              }
+            }
+          }
+
+          return count > 0 ? sum / count : 0;
+        }
+
+        setupLookupTables() {
+          console.log('Setting up lookup tables');
+          this.saturationPressure = new Float32Array(1000);
+          this.saturationDensity = new Float32Array(1000);
+          this.diffusionCoefficient = new Float32Array(1000);
+
+          for (let i = 0; i < 1000; i++) {
+            const T = i / 10 - 50 + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO;
+            const temp = Math.max(-50, Math.min(50, i / 10 - 50));
+
+            this.saturationPressure[i] = Math.max(1, 611.2 * Math.exp((17.62 * temp) / (243.12 + temp)));
+
+            this.saturationDensity[i] = Math.max(
+              1e-6,
+              (this.saturationPressure[i] * PHYSICAL_CONSTANTS.WATER_MOLECULAR_MASS) / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)
+            );
+
+            this.diffusionCoefficient[i] = Math.max(1e-6, PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY * Math.pow(T / 273.15, 1.5));
+          }
+        }
+      }
+
+      class DefectSystem {
+        constructor(size) {
+          this.size = size;
+          this.defects = new Float32Array(size * size);
+          this.defectTypes = new Uint8Array(size * size);
+          this.strainField = new Float32Array(size * size);
+          this.mobilityField = new Float32Array(size * size);
+          this.interactionEnergy = new Float32Array(size * size);
+
+          this.gridSize = 10;
+          this.partitions = new Map();
+
+          this.propagationProbability = 0.3;
+          this.maxDefectDensity = 0.8;
+          this.healingRate = 0.05;
+          this.interactionRadius = 2;
+        }
+
+        getPartitionKey(r, c) {
+          const gr = Math.floor(r / this.gridSize);
+          const gc = Math.floor(c / this.gridSize);
+          return `${gr},${gc}`;
+        }
+
+        addToPartition(idx, r, c) {
+          const key = this.getPartitionKey(r, c);
+          if (!this.partitions.has(key)) {
+            this.partitions.set(key, new Set());
+          }
+          this.partitions.get(key).add(idx);
+        }
+
+        removeFromPartition(idx, r, c) {
+          const key = this.getPartitionKey(r, c);
+          if (this.partitions.has(key)) {
+            this.partitions.get(key).delete(idx);
+            if (this.partitions.get(key).size === 0) {
+              this.partitions.delete(key);
+            }
+          }
+        }
+
+        getNeighboringDefects(r, c) {
+          const neighbors = new Set();
+          const gr = Math.floor(r / this.gridSize);
+          const gc = Math.floor(c / this.gridSize);
+
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              const key = `${gr + dr},${gc + dc}`;
+              if (this.partitions.has(key)) {
+                for (const idx of this.partitions.get(key)) {
+                  const nr = Math.floor(idx / this.size);
+                  const nc = idx % this.size;
+                  const dist = Math.sqrt((nr - r) * (nr - r) + (nc - c) * (nc - c));
+                  if (dist <= this.interactionRadius) {
+                    neighbors.add(idx);
+                  }
+                }
+              }
+            }
+          }
+
+          return neighbors;
+        }
+
+        update(crystallization, temperature, stress) {
+          const newDefects = new Float32Array(this.size * this.size);
+          const newTypes = new Uint8Array(this.size * this.size);
+
+          this.partitions.clear();
+          this.updateStrainField(stress);
+
+          for (let i = 0; i < this.size * this.size; i++) {
+            if (crystallization[i] < 0.5) continue;
+
+            const r = Math.floor(i / this.size);
+            const c = i % this.size;
+
+            const T = Math.max(PHYSICAL_CONSTANTS.ABSOLUTE_ZERO, temperature[i] + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO);
+            this.mobilityField[i] = Math.exp(-5e3 / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T));
+
+            const local_strain = this.strainField[i];
+            if (Math.abs(local_strain) > 0.5 && Math.random() < 0.1) {
+              newDefects[i] = Math.min(this.maxDefectDensity, this.defects[i] + 0.2 * Math.random());
+              newTypes[i] = 1;
+              this.addToPartition(i, r, c);
+            }
+
+            if (this.defects[i] > 0) {
+              this.calculateDefectInteractions(i, r, c, newDefects, newTypes, crystallization);
+            }
+
+            if (temperature[i] > -5) {
+              newDefects[i] = Math.max(0, this.defects[i] - this.healingRate * this.mobilityField[i]);
+            } else {
+              if (newDefects[i] === 0) {
+                newDefects[i] = this.defects[i];
+                newTypes[i] = this.defectTypes[i];
+              }
+            }
+
+            if (newDefects[i] > 0.1) {
+              this.addToPartition(i, r, c);
+            }
+          }
+
+          this.defects = newDefects;
+          this.defectTypes = newTypes;
+        }
+
+        updateStrainField(stress) {
+          const youngs_modulus = 9e9;
+          const poisson_ratio = 0.33;
+
+          for (let i = 0; i < this.size * this.size; i++) {
+            const strain_xx = Math.max(-0.1, Math.min(0.1, stress[i] / youngs_modulus));
+
+            const strain_yy = -poisson_ratio * strain_xx;
+
+            this.strainField[i] = Math.sqrt(strain_xx * strain_xx + strain_yy * strain_yy);
+          }
+        }
+
+        calculateDefectInteractions(idx, r, c, newDefects, newTypes, crystallization) {
+          const neighbors = this.getNeighboringDefects(r, c);
+          let interactionEnergy = 0;
+
+          for (const nidx of neighbors) {
+            if (nidx === idx) continue;
+
+            const nr = Math.floor(nidx / this.size);
+            const nc = nidx % this.size;
+
+            if (crystallization[nidx] > 0.5 && this.defects[nidx] > 0) {
+              const dr = nr - r;
+              const dc = nc - c;
+              const distance = Math.sqrt(dr * dr + dc * dc);
+
+              const interaction = this.calculatePairwiseInteraction(this.defectTypes[idx], this.defectTypes[nidx], distance);
+
+              interactionEnergy += interaction;
+
+              if (Math.random() < this.propagationProbability * this.mobilityField[idx]) {
+                newDefects[nidx] = Math.min(this.maxDefectDensity, this.defects[idx] * 0.9);
+                newTypes[nidx] = this.defectTypes[idx];
+              }
+            }
+          }
+
+          this.interactionEnergy[idx] = interactionEnergy;
+        }
+
+        calculatePairwiseInteraction(type1, type2, distance) {
+          const base_energy = 1.0 / Math.max(1e-6, distance);
+
+          if (type1 === type2) {
+            return base_energy * Math.exp(-distance / 2);
+          } else {
+            return -0.5 * base_energy * Math.exp(-distance / 3);
+          }
+        }
+      }
+
+      class ImprovedSnowflakeCA {
+        constructor(size = 301, seedVariation = 0, params = {}) {
+          console.log('ImprovedSnowflakeCA constructor started');
+
+          // Validate size
+          this.size = Math.max(101, Math.min(1001, size));
+          this.steps = 1000;
+          this.currentStep = 0;
+
+          // Initialize parameters
+          this.params = this.validateParams(
+            Object.assign(
+              {
+                temperature: -15,
+                humidity: 2.5,
+                growthSpeed: 0.8,
+                branchingFactor: 0.95,
+                noiseIntensity: 0.08,
+                crystalCore: 0.4,
+                edgeStability: 0.95,
+                diffusionRate: 0.4,
+                latentHeatRelease: 0.02,
+                airFlowIntensity: 0.3,
+                defectProbability: 0.1,
+                surfaceAnisotropy: 0.5,
+                boundaryLayerEffect: 0.3,
+                kineticCoefficient: 0.1,
+              },
+              params
+            )
+          );
+
+          // Initialize core arrays
+          this.crystallization = new Float32Array(this.size * this.size);
+          this.temperature = new Float32Array(this.size * this.size);
+          this.vapor = new Float32Array(this.size * this.size);
+          this.surfaceEnergy = new Float32Array(this.size * this.size);
+          this.stress = new Float32Array(this.size * this.size);
+
+          // Initialize physics systems
+          console.log('Initializing physics systems');
+          this.activeCells = new Set(); 
+          this.crystalDirections = new CrystalDirectionSystem();
+          this.depositionPhysics = new DepositionPhysics(this.size);
+          this.defectSystem = new DefectSystem(this.size);
+          this.airFlow = new VectorField(this.size);
+
+          // Initialize utilities
+          this.arrayPool = new TypedArrayPool(this.size * this.size, Float32Array, 50);
+          this.nucleationSites = new Set();
+          this.maxNucleationSites = Math.min(50, Math.floor(this.size * this.size * 0.001));
+
+          // Initialize fields
+          try {
+            this.initializeFields(seedVariation);
+          } catch (error) {
+            console.error('Error initializing fields:', error);
+            this.initializeFailsafe();
+          }
+
+          this.lastUpdateTime = performance.now();
+          this.frameTimings = new Array(60).fill(16.67);
+          console.log('ImprovedSnowflakeCA constructor finished');
+        }
+
+        validateParams(params) {
+          return {
+            temperature: Math.max(-40, Math.min(0, params.temperature)),
+            humidity: Math.max(0.1, Math.min(5.0, params.humidity)),
+            growthSpeed: Math.max(0.1, Math.min(2.0, params.growthSpeed)),
+            branchingFactor: Math.max(0, Math.min(1, params.branchingFactor)),
+            noiseIntensity: Math.max(0, Math.min(1, params.noiseIntensity)),
+            crystalCore: Math.max(0.1, Math.min(1, params.crystalCore)),
+            edgeStability: Math.max(0.1, Math.min(1, params.edgeStability)),
+            diffusionRate: Math.max(0.1, Math.min(1, params.diffusionRate)),
+            latentHeatRelease: Math.max(0, Math.min(0.1, params.latentHeatRelease)),
+            airFlowIntensity: Math.max(0, Math.min(1, params.airFlowIntensity)),
+            defectProbability: Math.max(0, Math.min(0.5, params.defectProbability)),
+            surfaceAnisotropy: Math.max(0, Math.min(1, params.surfaceAnisotropy)),
+            boundaryLayerEffect: Math.max(0, Math.min(1, params.boundaryLayerEffect)),
+            kineticCoefficient: Math.max(0.01, Math.min(1, params.kineticCoefficient)),
+          };
+        }
+
+        initializeFailsafe() {
+          const center = Math.floor(this.size / 2);
+          this.crystallization.fill(0);
+          this.temperature.fill(this.params.temperature);
+          this.vapor.fill(this.params.humidity);
+          this.surfaceEnergy.fill(1.0);
+          this.stress.fill(0);
+          this.crystallization[center * this.size + center] = 1.0;
+        }
+
+        initializeFields(seedVariation) {
+          console.log('ImprovedSnowflakeCA.initializeFields started');
+          const center = Math.floor(this.size / 2);
+
+          for (let i = 0; i < this.size * this.size; i++) {
+            const r = Math.floor(i / this.size);
+            const c = i % this.size;
+            const dr = r - center;
+            const dc = c - center;
+            const dist = Math.sqrt(dr * dr + dc * dc);
+            const normDist = dist / this.size;
+
+            const baseTemp = this.params.temperature;
+            const tempGradient = Math.min(0.3, 0.15 * normDist);
+            const tempNoise = this.turbulentNoise(r, c, 0.05);
+            this.temperature[i] = baseTemp * (1 + tempGradient) * Math.max(0.95, Math.min(1.05, 0.98 + tempNoise));
+
+            const baseHumidity = this.params.humidity;
+            const humidityGradient = Math.min(0.5, 0.3 * normDist);
+            const humidityNoise = this.turbulentNoise(r, c, 0.1);
+            this.vapor[i] = baseHumidity * (1 + humidityGradient) * Math.max(0.9, Math.min(1.1, 0.95 + humidityNoise));
+
+            const baseEnergy = 1.0;
+            const energyNoise = this.turbulentNoise(r, c, 0.1);
+            this.surfaceEnergy[i] = baseEnergy * Math.max(0.8, Math.min(1.2, 1.0 + energyNoise));
+
+            const stressNoise = this.turbulentNoise(r, c, 1.0);
+            this.stress[i] = Math.max(-0.2, Math.min(0.2, 0.1 * stressNoise));
+          }
+
+          this.createInitialSeed(center, seedVariation);
+          console.log('ImprovedSnowflakeCA.initializeFields finished');
+        }
+
+        calculateTotalEnergy() {
+          let energy = 0;
+          for (let i = 0; i < this.size * this.size; i++) {
+            energy += this.crystallization[i] * (1 + Math.abs(this.temperature[i])) + this.vapor[i];
+          }
+          return energy;
+        }
+
+        stabilize() {
+          for (let i = 0; i < this.size * this.size; i++) {
+            this.temperature[i] = Math.max(-40, Math.min(0, this.temperature[i]));
+            this.vapor[i] = Math.max(0, Math.min(5, this.vapor[i]));
+            this.stress[i] = Math.max(-1, Math.min(1, this.stress[i]));
+          }
+
+          const margin = 2;
+          const baseTemp = this.params.temperature;
+          const baseVapor = this.params.humidity;
+
+          for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < margin; j++) {
+              const edges = [j * this.size + i, (this.size - 1 - j) * this.size + i, i * this.size + j, i * this.size + (this.size - 1 - j)];
+
+              edges.forEach((idx) => {
+                if (idx >= 0 && idx < this.size * this.size) {
+                  this.temperature[idx] = baseTemp;
+                  this.vapor[idx] = baseVapor;
+                  this.stress[idx] = 0;
+                }
+              });
+            }
+          }
+        }
+
+        turbulentNoise(x, y, scale) {
+          let noise = 0;
+          let amplitude = 1;
+          let frequency = 1;
+          const persistence = 0.5;
+          const octaves = 4;
+          let totalAmplitude = 0;
+
+          for (let i = 0; i < octaves; i++) {
+            noise += amplitude * this.simpleNoise(x * frequency, y * frequency);
+            totalAmplitude += amplitude;
+            amplitude *= persistence;
+            frequency *= 2;
+          }
+
+          return (noise / totalAmplitude) * scale;
+        }
+
+        simpleNoise(x, y) {
+          const X = Math.floor(x) & 255;
+          const Y = Math.floor(y) & 255;
+
+          const xf = x - Math.floor(x);
+          const yf = y - Math.floor(y);
+
+          const u = this.fade(xf);
+          const v = this.fade(yf);
+
+          const A = (this.permutation[X] + Y) & 255;
+          const B = (this.permutation[(X + 1) & 255] + Y) & 255;
+
+          return this.lerp(
+            v,
+            this.lerp(u, this.grad(this.permutation[A], xf, yf), this.grad(this.permutation[B], xf - 1, yf)),
+            this.lerp(u, this.grad(this.permutation[(A + 1) & 255], xf, yf - 1), this.grad(this.permutation[(B + 1) & 255], xf - 1, yf - 1))
+          );
+        }
+
+        fade(t) {
+          return t * t * t * (t * (t * 6 - 15) + 10);
+        }
+
+        lerp(t, a, b) {
+          t = Math.max(0, Math.min(1, t));
+          return a + t * (b - a);
+        }
+
+        grad(hash, x, y) {
+          const h = hash & 15;
+          const grad_x = 1 + (h & 7);
+          const grad_y = 1 + ((h >> 3) & 7);
+          return (h & 8 ? -grad_x : grad_x) * x + (h & 8 ? -grad_y : grad_y) * y;
+        }
+
+        permutation = new Uint8Array([
+          151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148,
+          247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33, 88, 237, 149, 56, 87, 174, 20, 125, 136, 171, 168, 68,
+          175, 74, 165, 71, 134, 139, 48, 27, 166, 77, 146, 158, 231, 83, 111, 229, 122, 60, 211, 133, 230, 220, 105, 92, 41, 55, 46, 245, 40, 244,
+          102, 143, 54, 65, 25, 63, 161, 1, 216, 80, 73, 209, 76, 132, 187, 208, 89, 18, 169, 200, 196, 135, 130, 116, 188, 159, 86, 164, 100, 109,
+          198, 173, 186, 3, 64, 52, 217, 226, 250, 124, 123, 5, 202, 38, 147, 118, 126, 255, 82, 85, 212, 207, 206, 59, 227, 47, 16, 58, 17, 182, 189,
+          28, 42, 223, 183, 170, 213, 119, 248, 152, 2, 44, 154, 163, 70, 221, 153, 101, 155, 167, 43, 172, 9, 129, 22, 39, 253, 19, 98, 108, 110, 79,
+          113, 224, 232, 178, 185, 112, 104, 218, 246, 97, 228, 251, 34, 242, 193, 238, 210, 144, 12, 191, 179, 162, 241, 81, 51, 145, 235, 249, 14,
+          239, 107, 49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254, 138, 236, 205, 93, 222, 114, 67, 29,
+          24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180,
+        ]);
+
+        createInitialSeed(center, variation) {
+          const centerIdx = center * this.size + center;
+          
+          // Set up initial crystal at center
+          this.crystallization[centerIdx] = 1.0;
+          this.vapor[centerIdx] = 0;
+          this.nucleationSites.add(centerIdx);
+          this.activeCells.add(centerIdx);  // Add this line
+
+          // Add initial points along main crystal axes
+          const mainAngles = [0, Math.PI/3, 2*Math.PI/3, Math.PI, 4*Math.PI/3, 5*Math.PI/3];
+          for (const angle of mainAngles) {
+            const dx = Math.round(Math.cos(angle));
+            const dy = Math.round(Math.sin(angle));
+            const px = center + dx;
+            const py = center + dy;
+            
+            if (this.inBounds(py, px)) {
+              const idx = py * this.size + px;
+              this.crystallization[idx] = 0.6;
+              this.vapor[idx] = 0;
+              this.nucleationSites.add(idx);
+              this.activeCells.add(idx);  // Add this line
+              
+              // Add activeCells for immediate neighbors
+              for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                  const nr = py + dr;
+                  const nc = px + dc;
+                  if (this.inBounds(nr, nc)) {
+                    const nidx = nr * this.size + nc;
+                    if (!this.nucleationSites.has(nidx)) {
+                      this.activeCells.add(nidx);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        inBounds(r, c) {
+          return r >= 0 && r < this.size && c >= 0 && c < this.size;
+        }
+
+        nextStep() {
+          console.log(`Executing step ${this.currentStep}`);
+          const startTime = performance.now();
+
+          try {
+            // Validate simulation state
+            if (!this.crystallization || !this.temperature || !this.vapor) {
+              throw new Error('Simulation arrays not properly initialized');
+            }
+
+            // Debug current state
+            console.log('Current state:', {
+              crystallizationSum: this.crystallization.reduce((a, b) => a + b, 0),
+              temperatureRange: {
+                min: Math.min(...this.temperature),
+                max: Math.max(...this.temperature),
+              },
+              vaporRange: {
+                min: Math.min(...this.vapor),
+                max: Math.max(...this.vapor),
+              },
+            });
+
+            // Increment step counter
+            this.currentStep = Math.min(this.steps, this.currentStep + 1);
+
+            console.log('Updating crystallization...');
+            const crystalStart = performance.now();
+            this.updateCrystallization();
+            console.log(`Crystallization update took ${performance.now() - crystalStart}ms`);
+
+            // Update air flow less frequently
+            if (this.currentStep % 2 === 0) {
+              console.log('Updating air flow...');
+              const airStart = performance.now();
+              this.airFlow.update(this.temperature, this.crystallization);
+              console.log(`Air flow update took ${performance.now() - airStart}ms`);
+            }
+
+            console.log('Updating vapor field...');
+            const vaporStart = performance.now();
+            this.depositionPhysics.vaporField.update(this.crystallization, this.temperature, this.airFlow);
+            console.log(`Vapor field update took ${performance.now() - vaporStart}ms`);
+
+            console.log('Updating defect system...');
+            const defectStart = performance.now();
+            this.defectSystem.update(this.crystallization, this.temperature, this.stress);
+            console.log(`Defect system update took ${performance.now() - defectStart}ms`);
+
+            console.log('Diffusing fields...');
+            const diffuseStart = performance.now();
+            this.diffuseFields();
+            console.log(`Field diffusion took ${performance.now() - diffuseStart}ms`);
+
+            console.log('Cleaning up nucleation sites...');
+            const cleanupStart = performance.now();
+            this.cleanupNucleationSites();
+            console.log(`Nucleation cleanup took ${performance.now() - cleanupStart}ms`);
+          } catch (error) {
+            console.error('Error in simulation step:', error);
+            console.error('Error details:', {
+              step: this.currentStep,
+              arrays: {
+                crystallization: this.crystallization?.length,
+                temperature: this.temperature?.length,
+                vapor: this.vapor?.length,
+              },
+              error: error.stack,
+            });
+            throw error; // Re-throw to be caught by main loop
+          }
+
+          const totalTime = performance.now() - startTime;
+          console.log(`Step ${this.currentStep} completed in ${totalTime}ms`);
+        }
+
+        // Add validation method
+        validateState() {
+          const validationResults = {
+            crystallization: this.validateArray(this.crystallization, 'crystallization'),
+            temperature: this.validateArray(this.temperature, 'temperature'),
+            vapor: this.validateArray(this.vapor, 'vapor'),
+            stress: this.validateArray(this.stress, 'stress'),
+          };
+
+          console.log('Validation results:', validationResults);
+          return Object.values(validationResults).every((result) => result.valid);
+        }
+
+        validateArray(array, name) {
+          if (!array) {
+            return { valid: false, error: `${name} array is null` };
+          }
+          if (array.length !== this.size * this.size) {
+            return { valid: false, error: `${name} array has wrong size` };
+          }
+          const hasNaN = array.some((val) => isNaN(val));
+          if (hasNaN) {
+            return { valid: false, error: `${name} array contains NaN` };
+          }
+          return { valid: true };
+        }
+
+        handleSimulationError() {
+          this.initializeFailsafe();
+          this.currentStep = 0;
+        }
+
+        getAverageFrameTime() {
+          return this.frameTimings.reduce((a, b) => a + b, 0) / this.frameTimings.length;
+        }
+
+        updateCrystallization() {
+          console.log('Starting crystallization update...');
+          const startTime = performance.now();
+
+          // Debug current state
+          console.log('Current state:', {
+            nucleationSites: this.nucleationSites.size,
+            step: this.currentStep,
+            activeFields: {
+              crystallization: Boolean(this.crystallization),
+              temperature: Boolean(this.temperature),
+              vapor: Boolean(this.vapor),
+              stress: Boolean(this.stress),
+            },
+          });
+
+          const tempField = this.arrayPool.acquire();
+          const vaporField = this.arrayPool.acquire();
+
+          try {
+            // Initialize processing sets
+            const nextActiveCells = new Set();
+            let activeCells = this.activeCells || new Set();
+
+            // First step initialization with wider initial area
+            if (this.currentStep <= 1) {
+              console.log('Initializing with nucleation sites:', Array.from(this.nucleationSites));
+              activeCells = new Set(this.nucleationSites);
+
+              if (activeCells.size === 0) {
+                console.warn('No nucleation sites found, adding center point');
+                const center = Math.floor(this.size / 2);
+                const centerIdx = center * this.size + center;
+                activeCells.add(centerIdx);
+                this.nucleationSites.add(centerIdx);
+
+                // Add initial points along axes for better growth
+                const mainAngles = [0, Math.PI/3, 2*Math.PI/3, Math.PI, 4*Math.PI/3, 5*Math.PI/3];
+                for (const angle of mainAngles) {
+                  const dx = Math.round(Math.cos(angle));
+                  const dy = Math.round(Math.sin(angle));
+                  const px = center + dx;
+                  const py = center + dy;
+                  
+                  if (this.inBounds(py, px)) {
+                    const idx = py * this.size + px;
+                    this.crystallization[idx] = 0.6;
+                    activeCells.add(idx);
+                    this.nucleationSites.add(idx);
+                  }
+                }
+              }
+            }
+
+            console.log('Active cells to process:', activeCells.size);
+
+            // Safety check for empty active cells
+            if (activeCells.size === 0) {
+              console.warn('No active cells to process');
+              return;
+            }
+
+            // Process cells with enhanced error checking
+            const cells = Array.from(activeCells);
+            const maxCellsPerChunk = 100;
+            let processedCells = 0;
+            let errorCount = 0;
+
+            for (const cellIndex of cells) {
+              try {
+                // Validate cell index
+                if (cellIndex < 0 || cellIndex >= this.size * this.size) {
+                  console.warn(`Invalid cell index: ${cellIndex}`);
+                  continue;
+                }
+
+                const r = Math.floor(cellIndex / this.size);
+                const c = cellIndex % this.size;
+
+                // Process neighbors with wider radius
+                for (let dr = -2; dr <= 2; dr++) {
+                  for (let dc = -2; dc <= 2; dc++) {
+                    const nr = r + dr;
+                    const nc = c + dc;
+
+                    if (!this.inBounds(nr, nc)) continue;
+
+                    const neighborIndex = nr * this.size + nc;
+                    if (this.crystallization[neighborIndex] >= 0.95) continue;
+
+                    // Calculate growth with safety checks
+                    try {
+                      // Check if neighbor has any crystallized cells nearby
+                      let hasActiveCrystalNeighbor = false;
+                      for (let kr = -1; kr <= 1; kr++) {
+                        for (let kc = -1; kc <= 1; kc++) {
+                          const checkR = nr + kr;
+                          const checkC = nc + kc;
+                          if (this.inBounds(checkR, checkC)) {
+                            const checkIdx = checkR * this.size + checkC;
+                            if (this.crystallization[checkIdx] > 0.5) {
+                              hasActiveCrystalNeighbor = true;
+                              break;
+                            }
+                          }
+                        }
+                        if (hasActiveCrystalNeighbor) break;
+                      }
+
+                      if (!hasActiveCrystalNeighbor) continue;
+
+                      const depositionRate = this.depositionPhysics.calculateDepositionRate(
+                        neighborIndex,
+                        this.vapor,
+                        this.temperature,
+                        this.airFlow,
+                        this.crystallization,
+                        this.stress
+                      );
+
+                      if (!isFinite(depositionRate)) {
+                        console.warn(`Invalid deposition rate for cell ${neighborIndex}`);
+                        continue;
+                      }
+
+                      if (depositionRate > 0) {
+                        const dt = Math.min(0.1, this.adaptiveTimeStep());
+                        const growth = Math.max(0, Math.min(0.1, depositionRate * dt));
+
+                        const oldCrystal = this.crystallization[neighborIndex];
+                        const newCrystal = Math.min(1.0, oldCrystal + growth);
+
+                        if (newCrystal > oldCrystal) {
+                          this.crystallization[neighborIndex] = newCrystal;
+                          this.releaseLatentHeat(neighborIndex, newCrystal - oldCrystal);
+                          nextActiveCells.add(neighborIndex);
+                          
+                          // Add diagonal neighbors for better coverage
+                          for (let ddr = -1; ddr <= 1; ddr++) {
+                            for (let ddc = -1; ddc <= 1; ddc++) {
+                              const nnr = nr + ddr;
+                              const nnc = nc + ddc;
+                              if (this.inBounds(nnr, nnc)) {
+                                nextActiveCells.add(nnr * this.size + nnc);
+                              }
+                            }
+                          }
+                        }
+                      }
+                    } catch (error) {
+                      errorCount++;
+                      if (errorCount < 5) {
+                        // Limit error logging
+                        console.warn(`Error processing neighbor ${neighborIndex}:`, error);
+                      }
+                      continue;
+                    }
+                  }
+                }
+
+                processedCells++;
+
+                // Log progress periodically
+                if (processedCells % maxCellsPerChunk === 0) {
+                  console.log(`Processed ${processedCells}/${cells.length} cells`);
+
+                  // Check processing time
+                  if (performance.now() - startTime > 100) {
+                    console.warn('Processing timeout, will continue next frame');
+                    break;
+                  }
+                }
+              } catch (error) {
+                errorCount++;
+                if (errorCount < 5) {
+                  console.warn(`Error processing cell ${cellIndex}:`, error);
+                }
+                continue;
+              }
+            }
+
+            // Update fields
+            console.log('Updating temperature and vapor fields...');
+            for (let i = 0; i < this.size * this.size; i++) {
+              tempField[i] = this.temperature[i];
+              vaporField[i] = this.vapor[i];
+            }
+
+            for (let i = 0; i < this.size * this.size; i++) {
+              this.temperature[i] = tempField[i];
+              this.vapor[i] = vaporField[i];
+            }
+
+            // Update active cells with better fallback
+            this.activeCells = nextActiveCells.size > 0 ? 
+              nextActiveCells : 
+              new Set([...this.nucleationSites].filter((idx) => {
+                // Include cells that are crystallized or have crystallized neighbors
+                if (this.crystallization[idx] > 0) return true;
+                const r = Math.floor(idx / this.size);
+                const c = idx % this.size;
+                for (let dr = -1; dr <= 1; dr++) {
+                  for (let dc = -1; dc <= 1; dc++) {
+                    const nr = r + dr;
+                    const nc = c + dc;
+                    if (this.inBounds(nr, nc)) {
+                      const nidx = nr * this.size + nc;
+                      if (this.crystallization[nidx] > 0.5) return true;
+                    }
+                  }
+                }
+                return false;
+              }));
+
+            console.log('Update completed:', {
+              processedCells,
+              errorCount,
+              nextActiveCells: nextActiveCells.size,
+              timeElapsed: performance.now() - startTime,
+            });
+          } catch (error) {
+            console.error('Critical error in crystallization update:', error);
+            throw error;
+          } finally {
+            this.arrayPool.release(tempField);
+            this.arrayPool.release(vaporField);
+          }
+        }
+
+        // Helper method to safely check bounds
+        inBounds(r, c) {
+          return r >= 0 && r < this.size && c >= 0 && c < this.size;
+        }
+
+        // Adaptive time step calculation with safety checks
+        adaptiveTimeStep() {
+          try {
+            const maxGrowthRate = 0.1;
+            let dt = Math.min(PHYSICAL_CONSTANTS.MAX_TIME_STEP, Math.max(PHYSICAL_CONSTANTS.MIN_TIME_STEP, 1e-3));
+
+            let maxRate = 0;
+            let validRates = 0;
+
+            // Sample a subset of cells for performance
+            for (let i = 0; i < this.size * this.size; i += 10) {
+              if (this.crystallization[i] < 0.95) {
+                const rate = this.depositionPhysics.calculateDepositionRate(
+                  i,
+                  this.vapor,
+                  this.temperature,
+                  this.airFlow,
+                  this.crystallization,
+                  this.stress
+                );
+
+                if (isFinite(rate)) {
+                  maxRate = Math.max(maxRate, rate);
+                  validRates++;
+                }
+              }
+            }
+
+            if (validRates > 0 && maxRate > 0) {
+              dt = Math.min(dt, maxGrowthRate / maxRate);
+            }
+
+            return Math.max(PHYSICAL_CONSTANTS.MIN_TIME_STEP, dt);
+          } catch (error) {
+            console.warn('Error in adaptiveTimeStep:', error);
+            return PHYSICAL_CONSTANTS.MIN_TIME_STEP;
+          }
+        }
+
+        releaseLatentHeat(idx, amount) {
+          const r = Math.floor(idx / this.size);
+          const c = idx % this.size;
+          const heatAmount = Math.max(0, amount * this.params.latentHeatRelease * PHYSICAL_CONSTANTS.WATER_LATENT_HEAT);
+
+          const radius = 5;
+          const centerTemp = this.temperature[idx];
+          let totalHeatTransferred = 0;
+
+          for (let dr = -radius; dr <= radius; dr++) {
+            for (let dc = -radius; dc <= radius; dc++) {
+              const nr = r + dr;
+              const nc = c + dc;
+
+              if (this.inBounds(nr, nc)) {
+                const nidx = nr * this.size + nc;
+                const dist = Math.sqrt(dr * dr + dc * dc);
+
+                if (dist <= radius) {
+                  const k_effective = PHYSICAL_CONSTANTS.ICE_THERMAL_CONDUCTIVITY * (1 - 0.5 * this.crystallization[nidx]);
+                  const heatTransfer = ((heatAmount * k_effective) / (1 + dist * dist)) * Math.exp(-dist / 3);
+
+                  this.temperature[nidx] = Math.max(-50, Math.min(0, this.temperature[nidx] + heatTransfer));
+
+                  totalHeatTransferred += heatTransfer;
+
+                  this.stress[nidx] += Math.max(-0.5, Math.min(0.5, heatTransfer * 0.1 * (1 - this.crystallization[nidx])));
+
+                  this.vapor[nidx] *= Math.max(0.5, Math.min(1.0, 1 - 0.05 * heatTransfer));
+
+                  if (
+                    Math.random() < 0.01 * Math.abs(heatTransfer) &&
+                    this.nucleationSites.size < this.maxNucleationSites &&
+                    this.crystallization[nidx] < 0.5
+                  ) {
+                    this.nucleationSites.add(nidx);
+                  }
+                }
+              }
+            }
+          }
+
+          const energyError = Math.abs(heatAmount - totalHeatTransferred);
+          if (energyError > 1e-6) {
+            const correction = (heatAmount - totalHeatTransferred) / (Math.PI * radius * radius);
+
+            for (let dr = -radius; dr <= radius; dr++) {
+              for (let dc = -radius; dc <= radius; dc++) {
+                const nr = r + dr;
+                const nc = c + dc;
+                if (this.inBounds(nr, nc)) {
+                  const nidx = nr * this.size + nc;
+                  const dist = Math.sqrt(dr * dr + dc * dc);
+                  if (dist <= radius) {
+                    this.temperature[nidx] += correction * Math.exp(-dist / radius);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        updateFields() {
+          this.airFlow.update(this.temperature, this.crystallization);
+          this.defectSystem.update(this.crystallization, this.temperature, this.stress);
+          this.depositionPhysics.vaporField.update(this.crystallization, this.temperature, this.airFlow);
+
+          this.diffuseFields();
+        }
+
+        diffuseFields() {
+          const newTemp = this.arrayPool.acquire();
+          const newStress = this.arrayPool.acquire();
+
+          try {
+            for (let i = 0; i < this.size * this.size; i++) {
+              if (this.crystallization[i] > 0.9) {
+                newTemp[i] = this.temperature[i];
+                newStress[i] = this.stress[i];
+                continue;
+              }
+
+              const r = Math.floor(i / this.size);
+              const c = i % this.size;
+
+              let tSum = 0,
+                tCount = 0;
+              let sSum = 0,
+                sCount = 0;
+
+              for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                  const nr = r + dr;
+                  const nc = c + dc;
+
+                  if (this.inBounds(nr, nc)) {
+                    const nidx = nr * this.size + nc;
+                    const weight = 1 - this.crystallization[nidx] * 0.5;
+
+                    const vx = Math.min(1, Math.max(-1, this.airFlow.vx[i]));
+                    const vy = Math.min(1, Math.max(-1, this.airFlow.vy[i]));
+
+                    const flowWeight = 1 + 0.1 * (vx * dc + vy * dr);
+
+                    tSum += this.temperature[nidx] * weight * flowWeight;
+                    tCount += weight * flowWeight;
+
+                    const crystalWeight = 1 - Math.abs(this.crystallization[i] - this.crystallization[nidx]);
+
+                    sSum += this.stress[nidx] * weight * crystalWeight;
+                    sCount += weight * crystalWeight;
+                  }
+                }
+              }
+
+              if (tCount > 0) {
+                newTemp[i] = Math.max(-50, Math.min(0, this.temperature[i] + this.params.diffusionRate * (tSum / tCount - this.temperature[i])));
+              }
+
+              if (sCount > 0) {
+                newStress[i] = Math.max(-1, Math.min(1, this.stress[i] + this.params.diffusionRate * 0.3 * (sSum / sCount - this.stress[i])));
+              }
+            }
+
+            this.applyBoundaryConditions(newTemp, newStress);
+          } catch (error) {
+            console.error('Error in field diffusion:', error);
+          } finally {
+            for (let i = 0; i < this.size * this.size; i++) {
+              this.temperature[i] = newTemp[i];
+              this.stress[i] = newStress[i];
+            }
+            this.arrayPool.release(newTemp);
+            this.arrayPool.release(newStress);
+          }
+        }
+
+        applyBoundaryConditions(newTemp, newStress) {
+          const baseTemp = this.params.temperature;
+          const margin = 2;
+
+          for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < margin; j++) {
+              const turbulence = this.turbulentNoise(j, i, 0.05);
+              const edgeTemp = baseTemp * (0.98 + turbulence);
+
+              const top = j * this.size + i;
+              const bottom = (this.size - 1 - j) * this.size + i;
+              const left = i * this.size + j;
+              const right = i * this.size + (this.size - 1 - j);
+
+              if (top >= 0 && top < this.size * this.size) {
+                newTemp[top] = edgeTemp;
+                newStress[top] = 0;
+              }
+              if (bottom >= 0 && bottom < this.size * this.size) {
+                newTemp[bottom] = edgeTemp;
+                newStress[bottom] = 0;
+              }
+              if (left >= 0 && left < this.size * this.size) {
+                newTemp[left] = edgeTemp;
+                newStress[left] = 0;
+              }
+              if (right >= 0 && right < this.size * this.size) {
+                newTemp[right] = edgeTemp;
+                newStress[right] = 0;
+              }
+            }
+          }
+
+          for (let i = 0; i < margin; i++) {
+            for (let j = 0; j < margin; j++) {
+              const corners = [
+                i * this.size + j,
+                i * this.size + (this.size - 1 - j),
+                (this.size - 1 - i) * this.size + j,
+                (this.size - 1 - i) * this.size + (this.size - 1 - j),
+              ];
+
+              corners.forEach((idx) => {
+                if (idx >= 0 && idx < this.size * this.size) {
+                  newTemp[idx] = baseTemp;
+                  newStress[idx] = 0;
+                }
+              });
+            }
+          }
+        }
+
+        cleanupNucleationSites() {
+          const sitesToRemove = new Set();
+
+          for (const idx of this.nucleationSites) {
+            if (idx >= 0 && idx < this.size * this.size) {
+              if (this.crystallization[idx] > 0.8 || Math.random() < 0.1 * Math.abs(this.stress[idx]) || Math.random() < 0.05) {
+                sitesToRemove.add(idx);
+              }
+
+              const r = Math.floor(idx / this.size);
+              const c = idx % this.size;
+              let neighborCount = 0;
+
+              for (let dr = -2; dr <= 2; dr++) {
+                for (let dc = -2; dc <= 2; dc++) {
+                  const nr = r + dr;
+                  const nc = c + dc;
+                  if (this.inBounds(nr, nc)) {
+                    const nidx = nr * this.size + nc;
+                    if (this.nucleationSites.has(nidx)) {
+                      neighborCount++;
+                    }
+                  }
+                }
+              }
+
+              if (neighborCount > 5) {
+                sitesToRemove.add(idx);
+              }
+            } else {
+              sitesToRemove.add(idx);
+            }
+          }
+
+          sitesToRemove.forEach((idx) => {
+            this.nucleationSites.delete(idx);
+          });
+
+          while (this.nucleationSites.size > this.maxNucleationSites) {
+            const idx = Array.from(this.nucleationSites)[0];
+            this.nucleationSites.delete(idx);
+          }
+        }
+      }
+
+      class VectorField {
+        constructor(size) {
+          this.size = size;
+          this.vx = new Float32Array(size * size);
+          this.vy = new Float32Array(size * size);
+          this.pressure = new Float32Array(size * size);
+          this.divergence = new Float32Array(size * size);
+          this.curl = new Float32Array(size * size);
+
+          this.iterations = PHYSICAL_CONSTANTS.MAX_ITERATIONS;
+          this.convergenceThreshold = PHYSICAL_CONSTANTS.CONVERGENCE_THRESHOLD;
+        }
+
+        update(temperature, crystallization) {
+          this.calculateProperties(temperature, crystallization);
+          this.applyBoundaryEffects(crystallization);
+          this.applyIncompressibility();
+
+          // Example of adding a subtle swirling motion
+          const swirlFactor = 0.001;
+          const centerX = Math.floor(this.size / 2);
+          const centerY = Math.floor(this.size / 2);
+
+          for (let r = 0; r < this.size; r++) {
+            for (let c = 0; c < this.size; c++) {
+              const dx = c - centerX;
+              const dy = r - centerY;
+              this.vx[r * this.size + c] += dy * swirlFactor;
+              this.vy[r * this.size + c] -= dx * swirlFactor;
+            }
+          }
+        }
+
+        calculateProperties(temperature, crystallization) {
+          const center = Math.floor(this.size / 2);
+
+          for (let i = 0; i < this.size * this.size; i++) {
+            const r = Math.floor(i / this.size);
+            const c = i % this.size;
+
+            const tempGrad = this.getTemperatureGradient(temperature, r, c);
+            this.vy[i] += tempGrad * 0.01;
+
+            if (crystallization[i] > 0.5) {
+              const obstruction = Math.min(1.0, crystallization[i] * 2);
+              this.vx[i] *= 1 - obstruction;
+              this.vy[i] *= 1 - obstruction;
+            }
+
+            if (r > 0 && r < this.size - 1 && c > 0 && c < this.size - 1) {
+              this.divergence[i] = (this.vx[i + 1] - this.vx[i - 1] + (this.vy[i + this.size] - this.vy[i - this.size])) * 0.5;
+            }
+
+            if (r > 0 && r < this.size - 1 && c > 0 && c < this.size - 1) {
+              this.curl[i] = (this.vy[i + 1] - this.vy[i - 1] - (this.vx[i + this.size] - this.vx[i - this.size])) * 0.5;
+            }
+          }
+        }
+
+        getTemperatureGradient(temperature, r, c) {
+          if (r <= 0 || r >= this.size - 1) return 0;
+          return (temperature[(r + 1) * this.size + c] - temperature[(r - 1) * this.size + c]) / 2;
+        }
+
+        applyBoundaryEffects(crystallization) {
+          const margin = 2;
+
+          for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < margin; j++) {
+              const decay = (j + 1) / (margin + 1);
+
+              const top = j * this.size + i;
+              const bottom = (this.size - 1 - j) * this.size + i;
+              const left = i * this.size + j;
+              const right = i * this.size + (this.size - 1 - j);
+
+              if (top >= 0 && top < this.size * this.size) {
+                this.vx[top] *= decay;
+                this.vy[top] *= decay;
+              }
+              if (bottom >= 0 && bottom < this.size * this.size) {
+                this.vx[bottom] *= decay;
+                this.vy[bottom] *= decay;
+              }
+              if (left >= 0 && left < this.size * this.size) {
+                this.vx[left] *= decay;
+                this.vy[left] *= decay;
+              }
+              if (right >= 0 && right < this.size * this.size) {
+                this.vx[right] *= decay;
+                this.vy[right] *= decay;
+              }
+            }
+          }
+        }
+
+        applyIncompressibility() {
+          let maxDivergence = 1.0;
+          let iter = 0;
+
+          while (maxDivergence > this.convergenceThreshold && iter < this.iterations) {
+            maxDivergence = 0;
+
+            for (let r = 1; r < this.size - 1; r++) {
+              for (let c = 1; c < this.size - 1; c++) {
+                const idx = r * this.size + c;
+
+                const div = (this.vx[idx + 1] - this.vx[idx - 1] + this.vy[idx + this.size] - this.vy[idx - this.size]) * 0.5;
+
+                maxDivergence = Math.max(maxDivergence, Math.abs(div));
+
+                this.pressure[idx] -= div * 0.1;
+
+                const gradientScale = 0.5;
+                this.vx[idx - 1] += this.pressure[idx] * gradientScale;
+                this.vx[idx + 1] -= this.pressure[idx] * gradientScale;
+                this.vy[idx - this.size] += this.pressure[idx] * gradientScale;
+                this.vy[idx + this.size] -= this.pressure[idx] * gradientScale;
+              }
+            }
+
+            iter++;
+          }
+        }
+      }
+
+      class ImprovedRenderer {
+        constructor(canvas, size) {
+          console.log('ImprovedRenderer constructor started');
+          if (!canvas) {
+            throw new Error('Canvas element is required');
+          }
+          this.canvas = canvas;
+          this.ctx = canvas.getContext('2d', {
+            alpha: false,
+            desynchronized: true,
+          });
+
+          this.size = size;
+          this.pixelRatio = Math.min(2, window.devicePixelRatio || 1);
+
+          // Create offscreen canvas first
+          this.offscreenCanvas = document.createElement('canvas');
+          this.offscreenCtx = this.offscreenCanvas.getContext('2d', {
+            desynchronized: true,
+          });
+
+          // Then resize both canvases
+          this.resizeCanvas();
+          this.setupGradients();
+
+          this.imageData = this.ctx.createImageData(this.canvas.width, this.canvas.height);
+          this.buffer = new Uint32Array(this.imageData.data.buffer);
+
+          this.ctx.imageSmoothingEnabled = false;
+          this.offscreenCtx.imageSmoothingEnabled = false;
+
+          // Add resize listener
+          this._resizeHandler = () => this.resizeCanvas();
+          window.addEventListener('resize', this._resizeHandler);
+
+          console.log('ImprovedRenderer constructor finished, canvas:', this.canvas, 'size:', this.canvas?.width, 'x', this.canvas?.height);
+        }
+
+        resizeOffscreenCanvas() {
+          if (!this.offscreenCanvas || !this.canvas) {
+            throw new Error('Canvas not properly initialized');
+          }
+          this.offscreenCanvas.width = this.canvas.width;
+          this.offscreenCanvas.height = this.canvas.height;
+          this.offscreenCtx.imageSmoothingEnabled = false;
+        }
+
+        resizeCanvas() {
+          console.log('ImprovedRenderer.resizeCanvas started');
+          if (!this.canvas) {
+            throw new Error('Main canvas not initialized');
+          }
+
+          const rect = this.canvas.getBoundingClientRect();
+          this.canvas.width = rect.width * this.pixelRatio;
+          this.canvas.height = rect.height * this.pixelRatio;
+
+          this.imageData = this.ctx.createImageData(this.canvas.width, this.canvas.height);
+          this.buffer = new Uint32Array(this.imageData.data.buffer);
+
+          this.setupGradients();
+          this.resizeOffscreenCanvas();
+
+          console.log('ImprovedRenderer.resizeCanvas finished, size:', this.canvas.width, 'x', this.canvas.height);
+        }
+
+        cleanup() {
+          // Remove event listener when the renderer is no longer needed
+          window.removeEventListener('resize', this._resizeHandler);
+        }
+
+        setupGradients() {
+          this.gradientCache = new Map();
+
+          const coreGradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+          coreGradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+          coreGradient.addColorStop(0.7, 'rgba(220, 235, 255, 0.8)');
+          coreGradient.addColorStop(1, 'rgba(180, 210, 255, 0.0)');
+          this.gradientCache.set('core', coreGradient);
+
+          const edgeGradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+          edgeGradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+          edgeGradient.addColorStop(0.5, 'rgba(200, 220, 255, 0.5)');
+          edgeGradient.addColorStop(1, 'rgba(150, 180, 255, 0.0)');
+          this.gradientCache.set('edge', edgeGradient);
+
+          const defectGradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+          defectGradient.addColorStop(0, 'rgba(255, 100, 100, 0.6)');
+          defectGradient.addColorStop(0.5, 'rgba(255, 150, 150, 0.3)');
+          defectGradient.addColorStop(1, 'rgba(255, 200, 200, 0.0)');
+          this.gradientCache.set('defect', defectGradient);
+
+          const tempGradient = this.ctx.createLinearGradient(0, 0, 0, 1);
+          tempGradient.addColorStop(0, 'rgba(0, 150, 255, 0.2)');
+          tempGradient.addColorStop(0.5, 'rgba(0, 100, 255, 0.1)');
+          tempGradient.addColorStop(1, 'rgba(0, 50, 255, 0.0)');
+          this.gradientCache.set('temperature', tempGradient);
+        }
+
+        draw(snowflake, width, height) {
+          this.offscreenCtx.fillStyle = '#111827';
+          this.offscreenCtx.fillRect(0, 0, width, height);
+
+          const scale = (Math.min(width, height) / snowflake.size) * 0.9;
+          const offsetX = width / 2;
+          const offsetY = height / 2;
+
+          this.offscreenCtx.save();
+          this.offscreenCtx.translate(offsetX, offsetY);
+
+          this.drawTemperatureField(snowflake, scale);
+          this.drawCrystalStructure(snowflake, scale);
+          this.drawDefects(snowflake, scale);
+          this.drawSurfaceDetails(snowflake, scale);
+          this.drawAirFlow(snowflake, scale);
+          this.drawFrostingEffect(snowflake, scale);
+          this.drawBoundaryLayer(snowflake, scale);
+
+          this.offscreenCtx.restore();
+
+          this.applyPostProcessing(width, height);
+
+          this.ctx.clearRect(0, 0, width, height);
+          this.ctx.drawImage(this.offscreenCanvas, 0, 0);
+        }
+
+        drawTemperatureField(snowflake, scale) {
+          this.offscreenCtx.globalCompositeOperation = 'screen';
+          const center = Math.floor(snowflake.size / 2);
+
+          for (let r = 0; r < snowflake.size; r++) {
+            for (let c = 0; c < snowflake.size; c++) {
+              const idx = r * snowflake.size + c;
+              const temp = snowflake.temperature[idx];
+
+              if (temp < 0) {
+                const dx = (c - center) * scale;
+                const dy = (r - center) * scale;
+
+                const intensity = Math.pow(-temp / 50, 0.5);
+                this.offscreenCtx.fillStyle = `rgba(0, ${Math.floor(100 + 100 * intensity)}, ${Math.floor(200 + 55 * intensity)}, ${0.1 * intensity})`;
+
+                this.offscreenCtx.beginPath();
+                this.offscreenCtx.arc(dx, dy, scale * 1.5, 0, Math.PI * 2);
+                this.offscreenCtx.fill();
+              }
+            }
+          }
+        }
+
+        drawCrystalStructure(snowflake, scale) {
+          this.offscreenCtx.globalCompositeOperation = 'screen';
+          const center = Math.floor(snowflake.size / 2);
+
+          for (let r = 0; r < snowflake.size; r++) {
+            for (let c = 0; c < snowflake.size; c++) {
+              const idx = r * snowflake.size + c;
+              const crystal = snowflake.crystallization[idx];
+
+              if (crystal > 0.1) {
+                const dx = (c - center) * scale;
+                const dy = (r - center) * scale;
+
+                const gradient = this.offscreenCtx.createRadialGradient(dx, dy, 0, dx, dy, scale * 1.2);
+
+                const alpha = Math.pow(crystal, 1.5);
+                const temp = snowflake.temperature[idx];
+                const tempFactor = Math.max(0, -temp / 20);
+
+                gradient.addColorStop(0, `rgba(${255 - 20 * tempFactor}, ${255 - 10 * tempFactor}, 255, ${alpha * 0.9})`);
+                gradient.addColorStop(0.5, `rgba(${200 - 20 * tempFactor}, ${220 - 10 * tempFactor}, 255, ${alpha * 0.5})`);
+                gradient.addColorStop(1, 'rgba(147, 197, 253, 0)');
+
+                this.offscreenCtx.fillStyle = gradient;
+                this.offscreenCtx.beginPath();
+                this.offscreenCtx.arc(dx, dy, scale * 1.2, 0, Math.PI * 2);
+                this.offscreenCtx.fill();
+              }
+            }
+          }
+        }
+
+        drawDefects(snowflake, scale) {
+          this.offscreenCtx.globalCompositeOperation = 'overlay';
+          const center = Math.floor(snowflake.size / 2);
+
+          for (let r = 0; r < snowflake.size; r++) {
+            for (let c = 0; c < snowflake.size; c++) {
+              const idx = r * snowflake.size + c;
+              const defect = snowflake.defectSystem.defects[idx];
+
+              if (defect > 0.1) {
+                const dx = (c - center) * scale;
+                const dy = (r - center) * scale;
+
+                const defectType = snowflake.defectSystem.defectTypes[idx];
+                const stress = Math.abs(snowflake.stress[idx]);
+
+                let defectColor;
+                switch (defectType) {
+                  case 1:
+                    defectColor = `rgba(255, ${100 + 50 * stress}, ${100 + 25 * stress}, ${defect * 0.4})`;
+                    break;
+                  default:
+                    defectColor = `rgba(255, ${200 + 25 * stress}, ${200 + 25 * stress}, ${defect * 0.3})`;
+                }
+
+                this.offscreenCtx.fillStyle = defectColor;
+                this.offscreenCtx.beginPath();
+                this.offscreenCtx.arc(dx, dy, scale * 0.6, 0, Math.PI * 2);
+                this.offscreenCtx.fill();
+
+                if (stress > 0.2) {
+                  const lineCount = Math.floor(4 + stress * 4);
+                  this.offscreenCtx.strokeStyle = `rgba(255, 150, 150, ${defect * 0.2})`;
+                  this.offscreenCtx.lineWidth = scale * 0.1;
+
+                  for (let i = 0; i < lineCount; i++) {
+                    const angle = (i / lineCount) * Math.PI * 2;
+                    const length = scale * (0.8 + stress * 0.5);
+
+                    this.offscreenCtx.beginPath();
+                    this.offscreenCtx.moveTo(dx + Math.cos(angle) * scale * 0.7, dy + Math.sin(angle) * scale * 0.7);
+                    this.offscreenCtx.lineTo(dx + Math.cos(angle) * length, dy + Math.sin(angle) * length);
+                    this.offscreenCtx.stroke();
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        drawSurfaceDetails(snowflake, scale) {
+          this.offscreenCtx.globalCompositeOperation = 'overlay';
+          const center = Math.floor(snowflake.size / 2);
+
+          for (let r = 0; r < snowflake.size; r++) {
+            for (let c = 0; c < snowflake.size; c++) {
+              const idx = r * snowflake.size + c;
+              if (snowflake.crystallization[idx] > 0.5) {
+                const dx = (c - center) * scale;
+                const dy = (r - center) * scale;
+                const stress = Math.abs(snowflake.stress[idx]);
+
+                if (stress > 0.1) {
+                  const gradient = this.offscreenCtx.createRadialGradient(dx, dy, 0, dx, dy, scale * 0.6);
+
+                  gradient.addColorStop(0, `rgba(180, 200, 255, ${stress * 0.4})`);
+                  gradient.addColorStop(0.7, `rgba(160, 180, 255, ${stress * 0.2})`);
+                  gradient.addColorStop(1, 'rgba(140, 160, 255, 0)');
+
+                  this.offscreenCtx.fillStyle = gradient;
+                  this.offscreenCtx.beginPath();
+                  this.offscreenCtx.arc(dx, dy, scale * 0.6, 0, Math.PI * 2);
+                  this.offscreenCtx.fill();
+                }
+              }
+            }
+          }
+        }
+
+        drawAirFlow(snowflake, scale) {
+          this.offscreenCtx.globalCompositeOperation = 'soft-light';
+          const center = Math.floor(snowflake.size / 2);
+
+          const stepSize = 4;
+          const particleCount = 100;
+          const maxSteps = 50;
+
+          for (let i = 0; i < particleCount; i++) {
+            let x = Math.random() * snowflake.size;
+            let y = Math.random() * snowflake.size;
+
+            this.offscreenCtx.beginPath();
+            this.offscreenCtx.moveTo((x - center) * scale, (y - center) * scale);
+
+            for (let step = 0; step < maxSteps; step++) {
+              const idx = Math.floor(y) * snowflake.size + Math.floor(x);
+              if (idx < 0 || idx >= snowflake.size * snowflake.size) break;
+
+              const vx = snowflake.airFlow.vx[idx];
+              const vy = snowflake.airFlow.vy[idx];
+              const speed = Math.sqrt(vx * vx + vy * vy);
+
+              if (speed < 0.01) break;
+
+              x += vx * stepSize;
+              y += vy * stepSize;
+
+              if (x < 0 || x >= snowflake.size || y < 0 || y >= snowflake.size) break;
+
+              this.offscreenCtx.lineTo((x - center) * scale, (y - center) * scale);
+            }
+
+            this.offscreenCtx.strokeStyle = `rgba(147, 197, 253, ${0.05 + Math.random() * 0.05})`;
+            this.offscreenCtx.lineWidth = scale * 0.15;
+            this.offscreenCtx.stroke();
+          }
+        }
+
+        drawFrostingEffect(snowflake, scale) {
+          this.offscreenCtx.globalCompositeOperation = 'overlay';
+          const center = Math.floor(snowflake.size / 2);
+
+          for (let r = 0; r < snowflake.size; r++) {
+            for (let c = 0; c < snowflake.size; c++) {
+              const idx = r * snowflake.size + c;
+              if (snowflake.crystallization[idx] > 0.8) {
+                const dx = (c - center) * scale;
+                const dy = (r - center) * scale;
+
+                const temp = snowflake.temperature[idx];
+                const frostIntensity = Math.max(0, -temp / 20);
+
+                if (Math.random() < 0.3 * frostIntensity) {
+                  const highlight = Math.random() * 0.4 * frostIntensity;
+                  const size = scale * (0.1 + Math.random() * 0.1);
+
+                  this.offscreenCtx.fillStyle = `rgba(255, 255, 255, ${highlight})`;
+                  this.offscreenCtx.beginPath();
+                  this.offscreenCtx.arc(dx + (Math.random() - 0.5) * scale * 0.3, dy + (Math.random() - 0.5) * scale * 0.3, size, 0, Math.PI * 2);
+                  this.offscreenCtx.fill();
+                }
+              }
+            }
+          }
+        }
+
+        drawBoundaryLayer(snowflake, scale) {
+          this.offscreenCtx.globalCompositeOperation = 'multiply';
+          const center = Math.floor(snowflake.size / 2);
+
+          if (!snowflake.depositionPhysics?.boundaryLayer?.thickness) {
+            return;
+          }
+
+          for (let r = 0; r < snowflake.size; r++) {
+            for (let c = 0; c < snowflake.size; c++) {
+              const idx = r * snowflake.size + c;
+              if (snowflake.crystallization[idx] > 0.5) {
+                const dx = (c - center) * scale;
+                const dy = (r - center) * scale;
+
+                const thickness = snowflake.depositionPhysics.boundaryLayer.thickness[idx];
+                if (thickness > 0) {
+                  const gradient = this.offscreenCtx.createRadialGradient(dx, dy, 0, dx, dy, thickness * scale);
+
+                  gradient.addColorStop(0, 'rgba(180, 200, 255, 0.1)');
+                  gradient.addColorStop(0.7, 'rgba(160, 180, 255, 0.05)');
+                  gradient.addColorStop(1, 'rgba(140, 160, 255, 0)');
+
+                  this.offscreenCtx.fillStyle = gradient;
+                  this.offscreenCtx.beginPath();
+                  this.offscreenCtx.arc(dx, dy, thickness * scale, 0, Math.PI * 2);
+                  this.offscreenCtx.fill();
+                }
+              }
+            }
+          }
+        }
+
+        applyPostProcessing(width, height) {
+          this.offscreenCtx.globalCompositeOperation = 'screen';
+          this.offscreenCtx.filter = 'blur(8px)';
+          this.offscreenCtx.drawImage(this.offscreenCanvas, 0, 0);
+          this.offscreenCtx.filter = 'none';
+
+          const gradient = this.offscreenCtx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, Math.max(width, height) / 1.5);
+
+          gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+          gradient.addColorStop(1, 'rgba(0, 0, 0, 0.4)');
+
+          this.offscreenCtx.globalCompositeOperation = 'multiply';
+          this.offscreenCtx.fillStyle = gradient;
+          this.offscreenCtx.fillRect(0, 0, width, height);
+
+          this.offscreenCtx.globalCompositeOperation = 'source-over';
+        }
+      }
+
+      let simulator = null;
+      let renderer = null;
+      let currentSize = 301;
+      let isPlaying = false;
+      let currentStep = 0;
+
+      const controls = {
+        temperature: -15,
+        humidity: 2.5,
+        growthSpeed: 0.8,
+        branchingFactor: 0.95,
+        noiseIntensity: 0.08,
+        crystalCore: 0.4,
+        edgeStability: 0.95,
+        diffusionRate: 0.4,
+        latentHeatRelease: 0.02,
+        airFlowIntensity: 0.3,
+        defectProbability: 0.1,
+        surfaceAnisotropy: 0.5,
+        boundaryLayerEffect: 0.3,
+        kineticCoefficient: 0.1,
+        adaptiveTimeStepping: true,
+        visualDetail: 'high',
+      };
+
+      function setupGUI() {
+        const gui = new dat.GUI({ width: 300 });
+
+        const envFolder = gui.addFolder('Environment');
+        envFolder.add(controls, 'temperature', -30, 0, 0.5).name('Temperature (°C)').onChange(updateParams);
+        envFolder.add(controls, 'humidity', 0.5, 4.0, 0.1).name('Humidity').onChange(updateParams);
+        envFolder.add(controls, 'airFlowIntensity', 0, 1, 0.05).name('Air Flow').onChange(updateParams);
+        envFolder.open();
+
+        const growthFolder = gui.addFolder('Growth Parameters');
+        growthFolder.add(controls, 'growthSpeed', 0.1, 2.0, 0.1).name('Growth Speed').onChange(updateParams);
+        growthFolder.add(controls, 'branchingFactor', 0, 1, 0.05).name('Branching').onChange(updateParams);
+        growthFolder.add(controls, 'surfaceAnisotropy', 0, 1, 0.05).name('Anisotropy').onChange(updateParams);
+        growthFolder.add(controls, 'boundaryLayerEffect', 0, 1, 0.05).name('Boundary Layer').onChange(updateParams);
+        growthFolder.open();
+
+        const physicsFolder = gui.addFolder('Physics');
+        physicsFolder.add(controls, 'diffusionRate', 0, 1, 0.05).name('Diffusion Rate').onChange(updateParams);
+        physicsFolder.add(controls, 'latentHeatRelease', 0, 0.1, 0.01).name('Latent Heat').onChange(updateParams);
+        physicsFolder.add(controls, 'kineticCoefficient', 0, 1, 0.05).name('Kinetics').onChange(updateParams);
+        physicsFolder.add(controls, 'adaptiveTimeStepping').name('Adaptive Time Step').onChange(updateParams);
+
+        const visualFolder = gui.addFolder('Visualization');
+        visualFolder.add(controls, 'visualDetail', ['low', 'medium', 'high']).name('Detail Level').onChange(updateRenderer);
+
+        return gui;
+      }
+
+      function updateParams() {
+        if (simulator) {
+          Object.assign(simulator.params, controls);
+        }
+      }
+
+      function updateRenderer() {
+        if (renderer && renderer.setDetailLevel) {
+          renderer.setDetailLevel(controls.visualDetail);
+        }
+      }
+
+      function createSimulator(size) {
+        try {
+          const canvas = document.getElementById('snowflakeCanvas');
+          if (!canvas) {
+            throw new Error('Could not find snowflake canvas element');
+          }
+
+          // Cleanup old renderer if it exists
+          if (renderer && renderer.cleanup) {
+            renderer.cleanup();
+          }
+
+          renderer = new ImprovedRenderer(canvas, size);
+          simulator = new ImprovedSnowflakeCA(size, Math.random(), controls);
+          updateSimulation();
+        } catch (error) {
+          console.error('Error creating simulator:', error);
+          const container = document.getElementById('snowflakeCanvas').parentElement;
+          if (container) {
+            container.innerHTML = `
+                        <div class="p-4 bg-red-500 bg-opacity-20 rounded-lg text-white">
+                            Error initializing simulation: ${error.message}
+                            Please refresh the page.
+                        </div>
+                    `;
+          }
+        }
+      }
+
+      function updateSimulation() {
+        PerformanceMonitor.start('updateSimulation');
+
+        const stepCounter = document.getElementById('stepCounter');
+        if (stepCounter) {
+          stepCounter.textContent = `Step: ${currentStep} / 1,000`;
+        }
+
+        if (simulator && renderer) {
+          try {
+            PerformanceMonitor.start('render');
+            renderer.draw(simulator, renderer.canvas.width, renderer.canvas.height);
+            PerformanceMonitor.end('render');
+          } catch (error) {
+            console.error('Render error:', error);
+            isPlaying = false;
+          }
+        }
+
+        PerformanceMonitor.end('updateSimulation');
+      }
+
+      function togglePlayPause() {
+        isPlaying = !isPlaying;
+        const btn = document.getElementById('playPauseBtn');
+        btn.innerHTML = isPlaying
+          ? `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                 </svg>Pause`
+          : `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                 </svg>Play`;
+      }
+
+      function resetSimulation() {
+        isPlaying = false;
+        const btn = document.getElementById('playPauseBtn');
+        btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+             </svg>Play`;
+
+        currentStep = 0;
+        document.getElementById('timeSlider').value = 0;
+        createSimulator(currentSize);
+        updateSimulation();
+      }
+
+      function shuffleParameters() {
+        controls.temperature = -10 - Math.random() * 15;
+        controls.humidity = 1.0 + Math.random() * 2.5;
+        controls.growthSpeed = 0.5 + Math.random() * 1.0;
+        controls.branchingFactor = 0.3 + Math.random() * 0.7;
+        controls.noiseIntensity = 0.1 + Math.random() * 0.4;
+        controls.crystalCore = 0.2 + Math.random() * 0.6;
+        controls.edgeStability = 0.4 + Math.random() * 0.6;
+        controls.airFlowIntensity = 0.2 + Math.random() * 0.4;
+        controls.defectProbability = 0.05 + Math.random() * 0.15;
+
+        resetSimulation();
+      }
+
+      function handleSliderInput(event) {
+        currentStep = parseInt(event.target.value);
+        updateSimulation();
+      }
+
+      function handleResolutionChange(event) {
+        currentSize = parseInt(event.target.value);
+        createSimulator(currentSize);
+        currentStep = 0;
+        document.getElementById('timeSlider').value = 0;
+        updateSimulation();
+      }
+
+      class ParticleSystem {
+        constructor(canvas) {
+          this.canvas = canvas;
+          this.ctx = canvas.getContext('2d');
+          this.particles = [];
+          this.lastTime = performance.now();
+
+          this.resize();
+          window.addEventListener('resize', () => this.resize());
+        }
+
+        resize() {
+          const dpr = window.devicePixelRatio || 1;
+          this.canvas.width = window.innerWidth * dpr;
+          this.canvas.height = window.innerHeight * dpr;
+
+          this.ctx.scale(dpr, dpr);
+
+          this.canvas.style.width = window.innerWidth + 'px';
+          this.canvas.style.height = window.innerHeight + 'px';
+
+          this.init();
+        }
+
+        init() {
+          this.particles = [];
+          const particleCount = Math.floor((this.canvas.width * this.canvas.height) / 15000);
+
+          for (let i = 0; i < particleCount; i++) {
+            this.particles.push({
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+              size: Math.random() * 2 + 1,
+              speedX: Math.random() * 0.3 - 0.15,
+              speedY: -Math.random() * 0.3 - 0.15,
+              opacity: Math.random() * 0.3 + 0.1,
+              pulse: Math.random() * Math.PI * 2,
+              growthRate: Math.random() * 0.1 + 0.05,
+              maxSize: Math.random() * 3 + 2,
+            });
+          }
+        }
+
+        update() {
+          const currentTime = performance.now();
+          const deltaTime = (currentTime - this.lastTime) / 1000;
+          this.lastTime = currentTime;
+
+          this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          const time = currentTime / 1000;
+
+          this.particles.forEach((particle) => {
+            particle.x += particle.speedX * 60 * deltaTime;
+            particle.y += particle.speedY * 60 * deltaTime;
+
+            if (particle.x < 0) particle.x = window.innerWidth;
+            if (particle.x > window.innerWidth) particle.x = 0;
+            if (particle.y < 0) particle.y = window.innerHeight;
+            if (particle.y > window.innerHeight) particle.y = 0;
+
+            const twinkle = 0.5 + 0.5 * Math.sin(time * 2 + particle.pulse);
+            const finalOpacity = particle.opacity * twinkle;
+
+            const sizeOscillation = Math.sin(time * particle.growthRate + particle.pulse);
+            const currentSize = particle.size + sizeOscillation * 0.5;
+
+            const gradient = this.ctx.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, currentSize * 1.5);
+
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${finalOpacity})`);
+            gradient.addColorStop(0.5, `rgba(200, 220, 255, ${finalOpacity * 0.5})`);
+            gradient.addColorStop(1, 'rgba(147, 197, 253, 0)');
+
+            this.ctx.fillStyle = gradient;
+            this.ctx.beginPath();
+            this.ctx.arc(particle.x, particle.y, currentSize * 1.5, 0, Math.PI * 2);
+            this.ctx.fill();
+          });
+
+          requestAnimationFrame(() => this.update());
+        }
+      }
+
+      // Performance monitoring wrapper
+      const PerformanceMonitor = {
+        metrics: new Map(),
+        startTime: null,
+
+        start(label) {
+          if (!this.metrics.has(label)) {
+            this.metrics.set(label, {
+              totalTime: 0,
+              calls: 0,
+              maxTime: 0,
+            });
+          }
+          this.startTime = performance.now();
+        },
+
+        end(label) {
+          const endTime = performance.now();
+          const duration = endTime - this.startTime;
+          const metric = this.metrics.get(label);
+          metric.totalTime += duration;
+          metric.calls++;
+          metric.maxTime = Math.max(metric.maxTime, duration);
+
+          if (duration > 100) {
+            // Log long operations
+            console.warn(`Long operation detected: ${label} took ${duration.toFixed(2)}ms`);
+          }
+        },
+
+        reset() {
+          this.metrics.clear();
+        },
+
+        report() {
+          console.log('Performance Report:');
+          this.metrics.forEach((metric, label) => {
+            const avgTime = metric.totalTime / metric.calls;
+            console.log(`${label}:
+                        Calls: ${metric.calls}
+                        Avg Time: ${avgTime.toFixed(2)}ms
+                        Max Time: ${metric.maxTime.toFixed(2)}ms`);
+          });
+        },
+      };
+
+      // Optimized main loop with chunked processing
+      function mainLoop() {
+        try {
+          if (isPlaying && simulator) {
+            console.log('--- Starting new frame ---');
+
+            // Validate simulator state before proceeding
+            if (!simulator.validateState()) {
+              throw new Error('Invalid simulator state detected');
+            }
+
+            const frameStart = performance.now();
+            simulator.nextStep();
+            const frameTime = performance.now() - frameStart;
+
+            console.log(`Frame completed in ${frameTime}ms`);
+
+            currentStep++;
+            if (currentStep > 1000) {
+              currentStep = 0;
+              isPlaying = false;
+            }
+
+            // Update UI
+            const slider = document.getElementById('timeSlider');
+            if (slider) slider.value = currentStep;
+
+            // Schedule rendering
+            requestAnimationFrame(() => {
+              const renderStart = performance.now();
+              updateSimulation();
+              console.log(`Render completed in ${performance.now() - renderStart}ms`);
+            });
+          }
+
+          // Schedule next frame
+          requestAnimationFrame(mainLoop);
+        } catch (error) {
+          console.error('Critical simulation error:', error);
+          isPlaying = false;
+          handleSimulationError(error);
+        }
+      }
+
+      // Error handler
+      function handleSimulationError(error) {
+        console.error('Simulation error details:', {
+          error: error.message,
+          stack: error.stack,
+          simulatorState: simulator
+            ? {
+                step: simulator.currentStep,
+                size: simulator.size,
+                arrayLengths: {
+                  crystallization: simulator.crystallization?.length,
+                  temperature: simulator.temperature?.length,
+                  vapor: simulator.vapor?.length,
+                },
+              }
+            : 'simulator not initialized',
+        });
+
+        const playButton = document.getElementById('playPauseBtn');
+        if (playButton) {
+          playButton.innerHTML = `
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        Error
+                    `;
+          playButton.classList.add('bg-red-600');
+        }
+
+        // Show error to user
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg';
+        errorDiv.textContent = `Simulation error: ${error.message}`;
+        document.body.appendChild(errorDiv);
+        setTimeout(() => errorDiv.remove(), 5000);
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        try {
+          // Add event listeners with passive option where appropriate
+          document.getElementById('playPauseBtn').addEventListener('click', togglePlayPause, { passive: true });
+          document.getElementById('resetBtn').addEventListener('click', resetSimulation, { passive: true });
+          document.getElementById('shuffleBtn').addEventListener('click', shuffleParameters, { passive: true });
+          document.getElementById('timeSlider').addEventListener('input', handleSliderInput, { passive: true });
+          document.getElementById('resolutionSelect').addEventListener('change', handleResolutionChange, { passive: true });
+
+          const gui = setupGUI();
+
+          createSimulator(currentSize);
+          updateSimulation();
+
+          const particleSystem = new ParticleSystem(document.getElementById('backgroundParticles'));
+          particleSystem.update();
+
+          // Start main loop with performance monitoring
+          console.log('Starting main simulation loop...');
+          mainLoop();
+        } catch (error) {
+          console.error('Initialization error:', error);
+          const container = document.getElementById('snowflakeCanvas').parentElement;
+          if (container) {
+            container.innerHTML = `
+                            <div class="p-4 bg-red-500 bg-opacity-20 rounded-lg text-white">
+                                Error initializing simulation: ${error.message}
+                                <pre class="mt-2 text-sm opacity-75">${error.stack}</pre>
+                            </div>
+                        `;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
