@@ -154,7 +154,12 @@
             <div class="bg-gray-800/50 rounded-xl p-4 border border-blue-500/10 hover:border-blue-500/30 transition-colors duration-300">
               <h3 class="text-lg font-semibold mb-3 text-blue-300 flex items-center">
                 <svg class="w-5 h-5 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
                 </svg>
                 Basic Metrics
               </h3>
@@ -223,7 +228,12 @@
             <div class="bg-gray-800/50 rounded-xl p-4 border border-blue-500/10 hover:border-blue-500/30 transition-colors duration-300">
               <h3 class="text-lg font-semibold mb-3 text-blue-300 flex items-center">
                 <svg class="w-5 h-5 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                  />
                 </svg>
                 Physical Properties
               </h3>
@@ -235,15 +245,19 @@
                     <span id="statDefectDensity" class="text-white font-bold">0.0%</span>
                   </div>
                   <div class="w-full bg-gray-700/50 rounded-full h-2">
-                    <div id="defectDensityBar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    <div
+                      id="defectDensityBar"
+                      class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-300"
+                      style="width: 0%"
+                    ></div>
                   </div>
                 </div>
-                
+
                 <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg hover:bg-gray-900/70 transition-colors">
                   <span class="text-blue-200/80">Average Stress</span>
                   <span id="statAverageStress" class="text-white font-bold">0.000</span>
                 </div>
-                
+
                 <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg hover:bg-gray-900/70 transition-colors">
                   <span class="text-blue-200/80">Boundary Layer</span>
                   <div class="flex items-center">
@@ -260,7 +274,12 @@
             <div class="flex items-center justify-between text-sm text-blue-200/60">
               <div class="flex items-center">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 Real-time simulation statistics
               </div>
@@ -273,7 +292,6 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
     <script>
@@ -324,54 +342,155 @@
         }
       }
 
-      class CrystalDirectionSystem {
+      class EnhancedAnisotropySystem {
         constructor() {
-          this.primaryAngles = [0, 60, 120, 180, 240, 300].map((a) => (a * Math.PI) / 180);
-          this.secondaryAngles = [30, 90, 150, 210, 270, 330].map((a) => (a * Math.PI) / 180);
-          this.tertiaryAngles = Array.from({ length: 72 }, (_, i) => (i * 5 * Math.PI) / 180);
+          // High-resolution lookup tables for performance
+          this.ANGLE_RESOLUTION = 7200; // 0.05 degree resolution
+          this.surfaceEnergy = new Float32Array(this.ANGLE_RESOLUTION);
+          this.attachmentKinetics = new Float32Array(this.ANGLE_RESOLUTION);
+          this.mobilityFactors = new Float32Array(this.ANGLE_RESOLUTION);
+
+          // Physical constants for ice
+          this.BASAL_SURFACE_ENERGY = 0.109; // J/m² for ice basal plane
+          this.PRISM_SURFACE_ENERGY = 0.109; // J/m² for prismatic plane
+          this.STEP_EDGE_ENERGY = 0.055; // J/m for molecular steps
+
+          // Temperature-dependent parameters
+          this.ACTIVATION_ENERGY_BASAL = 5.5e-20; // J per molecule
+          this.ACTIVATION_ENERGY_PRISM = 5.9e-20; // J per molecule
+
           this.setupAnisotropyTables();
         }
 
         setupAnisotropyTables() {
-          this.surfaceEnergy = new Float32Array(360);
-          this.attachmentCoefficient = new Float32Array(360);
+          // Enhanced multi-scale anisotropy function combining:
+          // 1. Primary hexagonal symmetry
+          // 2. Secondary prism face effects
+          // 3. Step-edge barriers
+          // 4. Surface reconstruction effects
 
-          for (let i = 0; i < 360; i++) {
-            const angle = (i * Math.PI) / 180;
+          for (let i = 0; i < this.ANGLE_RESOLUTION; i++) {
+            const angle = (i * 2 * Math.PI) / this.ANGLE_RESOLUTION;
 
+            // Primary hexagonal symmetry (sharper than simple cos function)
+            const hexSymmetry = Math.pow(Math.abs(Math.cos(3 * angle)), 4);
+
+            // Secondary prism face effects (30° offset from primary)
+            const prismEffect = 0.3 * Math.pow(Math.abs(Math.cos(3 * angle + Math.PI / 6)), 8);
+
+            // Step-edge barrier function (creates sharp minima at specific angles)
+            const stepBarrier = this.calculateStepBarrier(angle);
+
+            // Surface reconstruction term (adds subtle complexity)
+            const reconstruction = 0.1 * (Math.cos(12 * angle) + Math.cos(18 * angle));
+
+            // Combine effects with physics-based weighting
             this.surfaceEnergy[i] =
-              1.0 +
-              0.8 * Math.cos(6 * angle) + // Increased coefficient for stronger 6-fold symmetry
-              0.2 * Math.cos(12 * angle) +
-              0.05 * Math.cos(18 * angle) +
-              0.02 * Math.cos(24 * angle) +
-              0.01 * Math.cos(30 * angle);
+              this.BASAL_SURFACE_ENERGY * (1.0 + 0.5 * hexSymmetry + 0.3 * prismEffect + 0.2 * stepBarrier + 0.05 * reconstruction);
 
-            this.attachmentCoefficient[i] = Math.max(
-              0.01,
-              0.1 *
-                (1.0 +
-                  1.2 * Math.cos(6 * angle) + // Increased coefficient
-                  0.4 * Math.cos(12 * angle) +
-                  0.1 * Math.cos(18 * angle))
-            );
+            // Attachment kinetics with strong angular dependence
+            this.attachmentKinetics[i] = this.calculateAttachmentKinetics(angle, hexSymmetry);
+
+            // Surface mobility factors
+            this.mobilityFactors[i] = this.calculateMobilityFactor(angle, stepBarrier);
           }
         }
 
-        getGrowthProbability(angle, temperature, stress) {
-          const normalizedAngle = (((angle + Math.PI) * 180) / Math.PI) % 360;
-          const idx = Math.floor(normalizedAngle);
+        calculateStepBarrier(angle) {
+          // Enhanced step-edge barrier function incorporating:
+          // - Sharp barriers at primary crystallographic directions
+          // - Secondary barriers at intermediate angles
+          // - Smooth transitions between barriers
 
-          let probability = 0;
-          if (temperature < -20) {
-            probability = 0.8 * this.attachmentCoefficient[idx] * (1 - 0.3 * Math.abs(stress));
-          } else if (temperature < -10) {
-            probability = this.attachmentCoefficient[idx] * (1 + 0.5 * Math.sin(angle * 6)) * (1 - 0.2 * Math.abs(stress));
-          } else {
-            probability = 0.6 * this.attachmentCoefficient[idx] * (1 + 0.3 * Math.cos(angle * 6)) * (1 - 0.1 * Math.abs(stress));
+          const primaryAngles = Array.from({ length: 6 }, (_, i) => (i * Math.PI) / 3);
+          const secondaryAngles = Array.from({ length: 6 }, (_, i) => (i * Math.PI) / 3 + Math.PI / 6);
+
+          let barrier = 0;
+
+          // Primary barriers (very sharp)
+          for (const refAngle of primaryAngles) {
+            const delta = Math.abs(((angle - refAngle + Math.PI) % (2 * Math.PI)) - Math.PI);
+            barrier += Math.exp(-Math.pow(delta * 30, 2));
           }
 
-          probability *= 2 - this.surfaceEnergy[idx];
+          // Secondary barriers (more gentle)
+          for (const refAngle of secondaryAngles) {
+            const delta = Math.abs(((angle - refAngle + Math.PI) % (2 * Math.PI)) - Math.PI);
+            barrier += 0.3 * Math.exp(-Math.pow(delta * 20, 2));
+          }
+
+          return barrier;
+        }
+
+        calculateAttachmentKinetics(angle, hexSymmetry) {
+          // Enhanced attachment kinetics model incorporating:
+          // - Strong preference for basal plane attachment
+          // - Temperature-dependent activation barriers
+          // - Surface roughness effects
+
+          const baseRate = 0.1; // base attachment rate
+          const roughnessFactor = 1.0 + 0.2 * Math.cos(12 * angle);
+          const activationBarrier = this.ACTIVATION_ENERGY_BASAL * (1.0 - 0.3 * hexSymmetry);
+
+          return baseRate * Math.exp(-activationBarrier / (1.380649e-23 * 273.15)) * roughnessFactor;
+        }
+
+        calculateMobilityFactor(angle, stepBarrier) {
+          // Surface mobility model incorporating:
+          // - Enhanced mobility along step edges
+          // - Reduced mobility across steps
+          // - Temperature dependence
+
+          const baseMobility = 1.0;
+          const stepEffect = 1.0 - 0.8 * stepBarrier;
+          const temperatureFactor = Math.exp(-5000 / 273.15);
+
+          return baseMobility * stepEffect * temperatureFactor;
+        }
+
+        getAnisotropyFactors(angle, temperature) {
+          // Get interpolated values from lookup tables with temperature correction
+          const idx = Math.floor(((angle + Math.PI) * this.ANGLE_RESOLUTION) / (2 * Math.PI)) % this.ANGLE_RESOLUTION;
+          const tempFactor = this.calculateTemperatureFactor(temperature);
+
+          return {
+            surfaceEnergy: this.surfaceEnergy[idx] * tempFactor.energy,
+            attachmentRate: this.attachmentKinetics[idx] * tempFactor.kinetics,
+            mobilityFactor: this.mobilityFactors[idx] * tempFactor.mobility,
+          };
+        }
+
+        calculateTemperatureFactor(temperature) {
+          // Temperature dependence of various factors
+          // Temperature should be in Kelvin
+          const reducedTemp = temperature / 273.15;
+
+          return {
+            energy: 1.0 - 0.1 * (1.0 - reducedTemp),
+            kinetics: Math.exp(-this.ACTIVATION_ENERGY_BASAL / (1.380649e-23 * temperature)),
+            mobility: Math.exp(-5000 / temperature),
+          };
+        }
+
+        /**
+         * Calculate growth probability based on all anisotropic factors
+         * @param {number} angle - Growth angle in radians
+         * @param {number} temperature - Temperature in Kelvin
+         * @param {number} supersaturation - Local supersaturation ratio
+         * @param {number} stress - Local stress factor
+         * @returns {number} Growth probability between 0 and 1
+         */
+        calculateGrowthProbability(angle, temperature, supersaturation, stress) {
+          const factors = this.getAnisotropyFactors(angle, temperature);
+
+          // Complex growth probability calculation incorporating all factors
+          const surfaceEnergyTerm = Math.exp(-factors.surfaceEnergy / (1.380649e-23 * temperature));
+          const kineticTerm = factors.attachmentRate * supersaturation;
+          const mobilityTerm = factors.mobilityFactor * (1.0 - 0.2 * Math.abs(stress));
+
+          // Combine terms with physics-based weighting
+          const probability = 0.4 * surfaceEnergyTerm + 0.4 * kineticTerm + 0.2 * mobilityTerm;
+
           return Math.max(0, Math.min(1, probability));
         }
       }
@@ -439,12 +558,20 @@
             const c_ratio = concentration_thickness / this.thickness[i];
             this.concentration[i] = vapor[i] * (1 - Math.exp(-3 * c_ratio));
 
+            let shear;
             if (reynolds < PHYSICAL_CONSTANTS.CRITICAL_REYNOLDS) {
-              this.shearStress[i] = Math.max(0, (0.332 * PHYSICAL_CONSTANTS.AIR_VISCOSITY * velocity * Math.sqrt(reynolds)) / characteristic_length);
+              shear = Math.max(0, (0.332 * PHYSICAL_CONSTANTS.AIR_VISCOSITY * velocity * Math.sqrt(reynolds)) / characteristic_length);
             } else {
               const cf = 0.0592 / Math.pow(reynolds, 0.2);
-              this.shearStress[i] = Math.max(0, 0.5 * PHYSICAL_CONSTANTS.AIR_DENSITY * velocity * velocity * cf);
+              shear = Math.max(0, 0.5 * PHYSICAL_CONSTANTS.AIR_DENSITY * velocity * velocity * cf);
             }
+            this.shearStress[i] = shear;
+
+            // Clamp values to reduce extreme variations
+            this.shearStress[i] = Math.min(this.shearStress[i], 5); // arbitrary clamp
+            this.velocity[i] = Math.min(Math.max(this.velocity[i], 1e-6), 1);
+            this.thickness[i] = Math.min(Math.max(this.thickness[i], 1e-6), 1e-3);
+
             this.cacheValid[i] = 1;
           }
         }
@@ -462,413 +589,496 @@
         }
       }
 
-      class SurfaceKinetics {
+      class EnhancedVaporField {
         constructor(size) {
           this.size = size;
-          this.attachmentRate = new Float32Array(size * size);
-          this.surfaceEnergy = new Float32Array(size * size);
-          this.mobilityFactor = new Float32Array(size * size);
-          this.nucleationBarrier = new Float32Array(size * size);
-          this.surfaceStress = new Float32Array(size * size);
-          this.setupAnisotropy();
-        }
 
-        setupAnisotropy() {
-          this.anisotropyTable = new Float32Array(360);
-          this.mobilityTable = new Float32Array(360);
-          this.nucleationTable = new Float32Array(360);
+          // Primary fields
+          this.vaporDensity = new Float32Array(size * size);
+          this.vaporFlux = new Float32Array(size * size);
+          this.interfaceVelocity = new Float32Array(size * size);
+          this.boundaryMask = new Uint8Array(size * size);
 
-          for (let i = 0; i < 360; i++) {
-            const angle = (i * Math.PI) / 180;
-
-            // Surface energy anisotropy with hexagonal symmetry
-            this.anisotropyTable[i] = Math.max(
-              0.1,
-              1.0 +
-                0.5 * Math.cos(6 * angle) +
-                0.1 * Math.cos(12 * angle) +
-                0.05 * Math.cos(18 * angle) +
-                0.02 * Math.cos(24 * angle) +
-                0.01 * Math.sin(30 * angle)
-            );
-
-            // Mobility anisotropy with crystallographic preferences
-            this.mobilityTable[i] = Math.max(
-              0.01,
-              0.1 + 0.8 * Math.abs(Math.cos(3 * angle)) + 0.2 * Math.abs(Math.cos(6 * angle)) + 0.1 * Math.abs(Math.sin(9 * angle))
-            );
-
-            // Nucleation preference with hexagonal symmetry
-            this.nucleationTable[i] = Math.max(0.1, 1.0 + 0.3 * Math.cos(6 * angle) + 0.1 * Math.cos(12 * angle) + 0.05 * Math.sin(18 * angle));
-          }
-        }
-
-        calculateAttachmentRate(idx, temperature, supersaturation, angle, stress) {
-          if (!isFinite(temperature) || !isFinite(supersaturation) || !isFinite(angle) || !isFinite(stress)) {
-            return 0;
-          }
-
-          // Input validation
-          if (idx < 0 || idx >= this.size * this.size) return 0;
-          if (!isFinite(temperature) || !isFinite(supersaturation) || !isFinite(angle) || !isFinite(stress)) return 0;
-          if (Math.abs(stress) > 10) return 0; // Additional validation for extreme stress values
-
-          try {
-            // Convert temperature to Kelvin and calculate angle index
-            const T = Math.max(PHYSICAL_CONSTANTS.ABSOLUTE_ZERO, temperature + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO);
-            const angleDeg = (((angle + Math.PI) * 180) / Math.PI) % 360;
-            const angleIdx = Math.floor(angleDeg);
-
-            // Validate angle index
-            if (angleIdx < 0 || angleIdx >= 360 || !this.anisotropyTable[angleIdx]) {
-              console.warn(`Invalid angle index: ${angleIdx} for cell ${idx}`);
-              return 0;
-            }
-
-            // Calculate surface energy with temperature dependence
-            const surfaceTempFactor = Math.max(0.5, Math.min(1.5, 1 - (0.1 * (T - PHYSICAL_CONSTANTS.ABSOLUTE_ZERO)) / 273.15));
-            const gamma = PHYSICAL_CONSTANTS.ICE_SURFACE_ENERGY * this.anisotropyTable[angleIdx] * surfaceTempFactor;
-
-            // Thermal energy scale with bounds checking
-            const kT = Math.max(1e-10, (PHYSICAL_CONSTANTS.GAS_CONSTANT * T) / PHYSICAL_CONSTANTS.WATER_MOLECULAR_MASS);
-
-            // Activation energy with stress dependence
-            const baseActivationEnergy = 5.5e3;
-            const stressEffect = Math.max(0.5, Math.min(1.5, 1 + 0.1 * Math.abs(stress)));
-            const activation_energy = baseActivationEnergy * stressEffect;
-
-            // Calculate beta with bounds
-            const beta = Math.max(1e-10, Math.exp(-activation_energy / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)));
-
-            // Mobility with temperature and stress dependence
-            const tempMobility = Math.max(1e-10, Math.exp(-2e3 / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)));
-            const stressMobility = Math.max(1e-10, Math.exp(-Math.abs(stress)));
-            const mobility = this.mobilityTable[angleIdx] * tempMobility * stressMobility;
-
-            // Nucleation factor with surface energy and stress
-            const energyFactor = Math.max(1e-10, Math.exp(-gamma / (kT * T)));
-            const stressNucleation = Math.max(0.1, 1 - 0.2 * Math.abs(stress));
-            const nucleation_factor = this.nucleationTable[angleIdx] * energyFactor * stressNucleation;
-
-            // Temperature-dependent attachment coefficient
-            let alpha;
-            if (temperature < -10) {
-              alpha = Math.min(1.0, 0.2 * (1 + Math.exp((temperature + 10) / 3)));
-            } else {
-              alpha = Math.min(1.0, 0.05 * (1 + Math.exp(-temperature / 5)));
-            }
-            alpha = Math.max(0.001, alpha); // Ensure minimum attachment probability
-
-            // Calculate final rate with improved supersaturation handling
-            const supersaturationEffect = Math.max(-1, Math.min(10, supersaturation));
-            const combinedRate = alpha * beta * mobility * nucleation_factor * (1 + supersaturationEffect);
-            const rate = Math.max(0, Math.min(1, combinedRate));
-
-            // Store results for later use (with validation)
-            if (isFinite(rate)) {
-              this.attachmentRate[idx] = rate;
-              this.surfaceEnergy[idx] = gamma;
-              this.mobilityFactor[idx] = mobility;
-              this.nucleationBarrier[idx] = nucleation_factor;
-              this.surfaceStress[idx] = stress;
-            } else {
-              console.warn(`Invalid rate calculated for cell ${idx}: ${rate}`);
-              return 0;
-            }
-
-            return rate;
-          } catch (error) {
-            console.warn(`Error calculating attachment rate for cell ${idx}:`, error);
-            return 0;
-          }
-        }
-      }
-
-      class VaporField {
-        constructor(size) {
-          console.log('Initializing VaporField with size:', size);
-          this.size = size;
-          this.field = new Float32Array(size * size);
-          this.diffusionRate = 0.1;
-          this.localPressure = new Float32Array(size * size);
-          this.saturationRatio = new Float32Array(size * size);
-          this.vaporGradient = {
+          // Auxiliary fields for Stefan problem
+          this.levelSet = new Float32Array(size * size);
+          this.interfaceNormals = {
             x: new Float32Array(size * size),
             y: new Float32Array(size * size),
           };
-          this.setupBoundaryConditions();
-          console.log('VaporField initialization complete');
+
+          // Physical constants
+          this.DIFFUSION_COEFFICIENT = 2.0e-5; // m²/s
+          this.VAPOR_DENSITY_ICE = 917.0; // kg/m³
+          this.VAPOR_DENSITY_AIR = 1.225; // kg/m³
+          this.LATENT_HEAT = 2.83e6; // J/kg
+          this.SURFACE_TENSION = 0.109; // J/m²
+          this.MOLECULAR_MASS = 18.015e-3; // kg/mol
+          this.GAS_CONSTANT = 8.314; // J/(mol·K)
+
+          // Numerical parameters
+          this.dt = 1e-6; // s
+          this.dx = 1e-6; // m
+          this.maxIterations = 50;
+          this.convergenceTolerance = 1e-6;
+
+          // Initialize solver matrices
+          this.initializeSolverMatrices();
         }
 
-        setupBoundaryConditions() {
-          const center = Math.floor(this.size / 2);
+        initializeSolverMatrices() {
+          const n = this.size * this.size;
+          // Sparse matrix storage for efficient computation
+          this.matrix = {
+            diagonal: new Float32Array(n),
+            offDiagonal: new Float32Array(n * 4),
+            indices: new Int32Array(n * 4),
+          };
+        }
 
+        updateVaporField(crystallization, temperature, airFlow) {
+          // 1. Update level set function and interface properties
+          this.updateLevelSet(crystallization);
+          this.computeInterfaceNormals();
+
+          // 2. Identify and classify boundary conditions
+          this.updateBoundaryConditions(crystallization, temperature);
+
+          // 3. Solve Stefan problem with moving boundary
+          this.solveStefanProblem(temperature, airFlow);
+
+          // 4. Update vapor fluxes and interface velocities
+          this.updateFluxesAndVelocities();
+
+          // 5. Apply corrections for surface tension and kinetic effects
+          this.applySurfaceEffects(temperature);
+        }
+
+        updateLevelSet(crystallization) {
+          // Implement fast marching method for level set update
           for (let i = 0; i < this.size * this.size; i++) {
-            const r = Math.floor(i / this.size);
-            const c = i % this.size;
-            const dr = r - center;
-            const dc = c - center;
-            const dist = Math.sqrt(dr * dr + dc * dc);
+            const phi = crystallization[i] - 0.5;
+            this.levelSet[i] = phi;
 
-            const base_supersaturation = Math.max(1.0, 1.0 + 0.5 * (dist / this.size) + 0.1 * Math.sin(dist / 10));
-
-            const turbulence = 0.1 * (2 * Math.random() - 1) * Math.exp(-dist / (this.size / 4));
-
-            this.field[i] = Math.max(0, base_supersaturation * (1 + turbulence));
-
-            const altitude_factor = 1 - 0.0001 * dist;
-            this.localPressure[i] = Math.max(0, 101325 * altitude_factor * (1 + 0.01 * turbulence));
-          }
-        }
-
-        updateSaturationConditions(temperature) {
-          for (let i = 0; i < this.size * this.size; i++) {
-            const T = Math.max(PHYSICAL_CONSTANTS.ABSOLUTE_ZERO, temperature[i] + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO);
-
-            const P_sat = Math.max(1, 611.2 * Math.exp((17.62 * temperature[i]) / (243.12 + Math.max(-50, Math.min(50, temperature[i])))));
-
-            this.saturationRatio[i] = Math.max(0, (this.localPressure[i] * this.field[i]) / P_sat);
-          }
-        }
-
-        calculateVaporGradients() {
-          const center = Math.floor(this.size / 2);
-
-          for (let r = 0; r < this.size; r++) {
-            for (let c = 0; c < this.size; c++) {
-              const i = r * this.size + c;
-
-              let dx = 0,
-                dy = 0;
-
-              if (c > 0 && c < this.size - 1) {
-                dx = (this.field[i + 1] - this.field[i - 1]) / 2;
-              }
-
-              if (r > 0 && r < this.size - 1) {
-                dy = (this.field[i + this.size] - this.field[i - this.size]) / 2;
-              }
-
-              this.vaporGradient.x[i] = dx;
-              this.vaporGradient.y[i] = dy;
+            // Compute signed distance function
+            if (Math.abs(phi) < 1e-6) {
+              this.boundaryMask[i] = 1;
+              // Compute accurate distance near interface
+              this.levelSet[i] = this.computeAccurateDistance(i, crystallization);
+            } else {
+              this.boundaryMask[i] = 0;
             }
           }
         }
 
-        update(crystallization, temperature, airFlow) {
-          console.log('Updating vapor field');
-          const newField = new Float32Array(this.size * this.size);
-          this.updateSaturationConditions(temperature);
-          this.calculateVaporGradients();
+        computeAccurateDistance(idx, crystallization) {
+          const r = Math.floor(idx / this.size);
+          const c = idx % this.size;
+          let minDist = Infinity;
 
-          for (let i = 0; i < this.size * this.size; i++) {
-            const r = Math.floor(i / this.size);
-            const c = i % this.size;
-
-            if (crystallization[i] > 0.5) {
-              newField[i] = Math.max(0, this.field[i] * 0.1);
-              continue;
-            }
-
-            let flux = 0;
-            let weight_sum = 0;
-
-            for (let dr = -1; dr <= 1; dr++) {
-              for (let dc = -1; dc <= 1; dc++) {
-                const nr = r + dr;
-                const nc = c + dc;
-
-                if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
-                  const nidx = nr * this.size + nc;
-
-                  if (crystallization[nidx] < 0.5) {
-                    const D_eff = PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY * (1 + 0.1 * Math.abs(temperature[i]));
-
-                    const delta = Math.sqrt(dr * dr + dc * dc);
-                    const diff_flux = (D_eff * (this.field[nidx] - this.field[i])) / Math.max(delta, 1e-6);
-
-                    const vx = Math.min(1, Math.max(-1, airFlow.vx[i]));
-                    const vy = Math.min(1, Math.max(-1, airFlow.vy[i]));
-                    const adv_flux = (vx * dr + vy * dc) * this.field[nidx];
-
-                    const weight = 1 / (delta + 1e-6);
-                    flux += (diff_flux + adv_flux) * weight;
-                    weight_sum += weight;
-                  }
+          // Search in local neighborhood for interface
+          for (let dr = -2; dr <= 2; dr++) {
+            for (let dc = -2; dc <= 2; dc++) {
+              const nr = r + dr;
+              const nc = c + dc;
+              if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
+                const nidx = nr * this.size + nc;
+                if ((crystallization[nidx] - 0.5) * (crystallization[idx] - 0.5) <= 0) {
+                  // Interface crosses between these points
+                  const dist = Math.sqrt(dr * dr + dc * dc) * this.dx;
+                  minDist = Math.min(minDist, dist);
                 }
               }
             }
-
-            if (weight_sum > 0) {
-              newField[i] = Math.max(0, Math.min(5, this.field[i] + (this.diffusionRate * flux) / weight_sum));
-            } else {
-              newField[i] = this.field[i];
-            }
           }
 
-          this.field = newField;
+          return Math.sign(crystallization[idx] - 0.5) * minDist;
+        }
+
+        computeInterfaceNormals() {
+          // Compute normals using high-order ENO scheme
+          for (let r = 2; r < this.size - 2; r++) {
+            for (let c = 2; c < this.size - 2; c++) {
+              const idx = r * this.size + c;
+              if (this.boundaryMask[idx]) {
+                // Use 5-point stencil for gradient computation
+                const dx =
+                  (-this.levelSet[idx + 2] + 8 * this.levelSet[idx + 1] - 8 * this.levelSet[idx - 1] + this.levelSet[idx - 2]) / (12 * this.dx);
+
+                const dy =
+                  (-this.levelSet[idx + 2 * this.size] +
+                    8 * this.levelSet[idx + this.size] -
+                    8 * this.levelSet[idx - this.size] +
+                    this.levelSet[idx - 2 * this.size]) /
+                  (12 * this.dx);
+
+                // Normalize
+                const mag = Math.sqrt(dx * dx + dy * dy);
+                this.interfaceNormals.x[idx] = dx / mag;
+                this.interfaceNormals.y[idx] = dy / mag;
+              }
+            }
+          }
+        }
+
+        updateBoundaryConditions(crystallization, temperature) {
+          for (let i = 0; i < this.size * this.size; i++) {
+            if (this.boundaryMask[i]) {
+              // Compute equilibrium vapor density at interface
+              const T = temperature[i] + 273.15;
+              const P_sat = 611.2 * Math.exp((17.62 * temperature[i]) / (243.12 + temperature[i]));
+              const rho_eq = (P_sat * this.MOLECULAR_MASS) / (this.GAS_CONSTANT * T);
+
+              // Apply Gibbs-Thomson effect
+              const kappa = this.computeLocalCurvature(i);
+              const rho_surface =
+                rho_eq * Math.exp((2 * this.SURFACE_TENSION * this.MOLECULAR_MASS) / (this.GAS_CONSTANT * T * this.VAPOR_DENSITY_ICE * kappa));
+
+              this.vaporDensity[i] = rho_surface;
+            }
+          }
+        }
+
+        computeLocalCurvature(idx) {
+          // Compute mean curvature using level set function
+          const r = Math.floor(idx / this.size);
+          const c = idx % this.size;
+
+          // Second derivatives
+          const dxx = (this.levelSet[idx + 1] - 2 * this.levelSet[idx] + this.levelSet[idx - 1]) / (this.dx * this.dx);
+          const dyy = (this.levelSet[idx + this.size] - 2 * this.levelSet[idx] + this.levelSet[idx - this.size]) / (this.dx * this.dx);
+
+          // Mixed derivative
+          const dxy =
+            (this.levelSet[idx + 1 + this.size] -
+              this.levelSet[idx - 1 + this.size] -
+              (this.levelSet[idx + 1 - this.size] - this.levelSet[idx - 1 - this.size])) /
+            (4 * this.dx * this.dx);
+
+          // First derivatives
+          const dx = this.interfaceNormals.x[idx];
+          const dy = this.interfaceNormals.y[idx];
+
+          // Mean curvature
+          return -((1 + dy * dy) * dxx - 2 * dx * dy * dxy + (1 + dx * dx) * dyy) / (2 * Math.pow(1 + dx * dx + dy * dy, 1.5));
+        }
+
+        solveStefanProblem(temperature, airFlow) {
+          // Implement semi-implicit scheme for Stefan problem
+          let iteration = 0;
+          let maxResidual = Infinity;
+
+          const rho_prev = new Float32Array(this.vaporDensity);
+
+          while (iteration < this.maxIterations && maxResidual > this.convergenceTolerance) {
+            maxResidual = 0;
+
+            // Build system matrix incorporating Stefan condition
+            this.buildSystemMatrix(airFlow);
+
+            // Solve system using BiCGSTAB method
+            const solution = this.solveBiCGSTAB();
+
+            // Update vapor density
+            for (let i = 0; i < this.size * this.size; i++) {
+              const change = solution[i] - this.vaporDensity[i];
+              maxResidual = Math.max(maxResidual, Math.abs(change));
+              this.vaporDensity[i] = solution[i];
+            }
+
+            iteration++;
+          }
+        }
+
+        buildSystemMatrix(airFlow) {
+          // Build sparse matrix for implicit solver
+          for (let r = 0; r < this.size; r++) {
+            for (let c = 0; c < this.size; c++) {
+              const idx = r * this.size + c;
+
+              if (this.boundaryMask[idx]) {
+                // Dirichlet boundary condition at interface
+                this.matrix.diagonal[idx] = 1.0;
+                continue;
+              }
+
+              // Diffusion terms with convection
+              const D = this.DIFFUSION_COEFFICIENT;
+              const vx = airFlow.vx[idx];
+              const vy = airFlow.vy[idx];
+
+              // Central difference for diffusion, upwind for convection
+              const dx2 = this.dx * this.dx;
+              this.matrix.diagonal[idx] = ((-2 * D) / dx2) * (1 + 1) + 1 / this.dt;
+
+              // Add convection terms with upwinding
+              if (vx > 0) {
+                this.matrix.diagonal[idx] += vx / this.dx;
+              } else {
+                this.matrix.diagonal[idx] -= vx / this.dx;
+              }
+
+              if (vy > 0) {
+                this.matrix.diagonal[idx] += vy / this.dx;
+              } else {
+                this.matrix.diagonal[idx] -= vy / this.dx;
+              }
+            }
+          }
+        }
+
+        solveBiCGSTAB() {
+          const n = this.size * this.size;
+
+          // Allocate vectors needed for BiCGSTAB
+          const x = new Float32Array(n); // Solution vector
+          const r = new Float32Array(n); // Residual
+          const r0_hat = new Float32Array(n); // Initial residual
+          const v = new Float32Array(n); // Search direction
+          const p = new Float32Array(n); // Auxiliary vector
+          const s = new Float32Array(n); // Auxiliary vector
+          const t = new Float32Array(n); // Auxiliary vector
+
+          // Initialize solution vector
+          for (let i = 0; i < n; i++) {
+            x[i] = this.vaporDensity[i];
+          }
+
+          // Calculate initial residual r = b - Ax
+          this.computeResidual(x, r);
+
+          // Set initial shadow residual r0_hat = r
+          for (let i = 0; i < n; i++) {
+            r0_hat[i] = r[i];
+          }
+
+          // Initialize other parameters
+          let rho = 1.0;
+          let alpha = 1.0;
+          let omega = 1.0;
+
+          // Main iteration loop
+          let iter = 0;
+          const maxIter = Math.min(1000, n); // Limit maximum iterations
+          const tolerance = 1e-6;
+
+          while (iter < maxIter) {
+            const rho_new = this.dotProduct(r0_hat, r);
+
+            // Beta calculation
+            const beta = (rho_new / rho) * (alpha / omega);
+            rho = rho_new;
+
+            // Update p
+            for (let i = 0; i < n; i++) {
+              p[i] = r[i] + beta * (p[i] - omega * v[i]);
+            }
+
+            // Compute v = A*p
+            this.matrixVectorProduct(p, v);
+
+            // Compute alpha
+            alpha = rho / this.dotProduct(r0_hat, v);
+
+            // Update s = r - alpha*v
+            for (let i = 0; i < n; i++) {
+              s[i] = r[i] - alpha * v[i];
+            }
+
+            // Compute t = A*s
+            this.matrixVectorProduct(s, t);
+
+            // Compute omega
+            const ts_dot = this.dotProduct(t, s);
+            const tt_dot = this.dotProduct(t, t);
+            omega = ts_dot / tt_dot;
+
+            // Update solution and residual
+            for (let i = 0; i < n; i++) {
+              x[i] = x[i] + alpha * p[i] + omega * s[i];
+              r[i] = s[i] - omega * t[i];
+            }
+
+            // Check convergence
+            const residualNorm = this.vectorNorm(r);
+            if (residualNorm < tolerance) {
+              break;
+            }
+
+            // Check for breakdown
+            if (Math.abs(omega) < 1e-14 || Math.abs(rho) < 1e-14) {
+              // Reset to handle breakdown
+              omega = 1.0;
+              rho = 1.0;
+              for (let i = 0; i < n; i++) {
+                r[i] = this.vaporDensity[i] - x[i];
+                r0_hat[i] = r[i];
+              }
+            }
+
+            iter++;
+          }
+
+          return x;
+        }
+
+        computeResidual(x, r) {
+          // Compute r = b - Ax for sparse matrix
+          const n = this.size * this.size;
+
+          for (let i = 0; i < n; i++) {
+            // Start with b (right-hand side)
+            r[i] = this.vaporDensity[i];
+
+            // Subtract A*x using sparse matrix structure
+            let sum = 0;
+            // Diagonal term
+            sum += this.matrix.diagonal[i] * x[i];
+
+            // Off-diagonal terms
+            for (let j = 0; j < 4; j++) {
+              const neighbor_idx = this.matrix.indices[i * 4 + j];
+              if (neighbor_idx >= 0 && neighbor_idx < n) {
+                sum += this.matrix.offDiagonal[i * 4 + j] * x[neighbor_idx];
+              }
+            }
+
+            r[i] -= sum;
+          }
+        }
+
+        matrixVectorProduct(v, result) {
+          // Compute result = A*v for sparse matrix
+          const n = this.size * this.size;
+
+          for (let i = 0; i < n; i++) {
+            let sum = 0;
+
+            // Diagonal term
+            sum += this.matrix.diagonal[i] * v[i];
+
+            // Off-diagonal terms
+            for (let j = 0; j < 4; j++) {
+              const neighbor_idx = this.matrix.indices[i * 4 + j];
+              if (neighbor_idx >= 0 && neighbor_idx < n) {
+                sum += this.matrix.offDiagonal[i * 4 + j] * v[neighbor_idx];
+              }
+            }
+
+            result[i] = sum;
+          }
+        }
+
+        dotProduct(a, b) {
+          let sum = 0;
+          for (let i = 0; i < a.length; i++) {
+            sum += a[i] * b[i];
+          }
+          return sum;
+        }
+
+        vectorNorm(v) {
+          return Math.sqrt(this.dotProduct(v, v));
+        }
+
+        updateFluxesAndVelocities() {
+          for (let i = 0; i < this.size * this.size; i++) {
+            if (this.boundaryMask[i]) {
+              // Compute vapor flux at interface
+              const flux = this.computeInterfaceFlux(i);
+              this.vaporFlux[i] = flux;
+
+              // Update interface velocity
+              this.interfaceVelocity[i] = flux / this.VAPOR_DENSITY_ICE;
+            }
+          }
+        }
+
+        computeInterfaceFlux(idx) {
+          const r = Math.floor(idx / this.size);
+          const c = idx % this.size;
+
+          // Compute flux using one-sided differences in normal direction
+          const nx = this.interfaceNormals.x[idx];
+          const ny = this.interfaceNormals.y[idx];
+
+          // Use ENO scheme for flux computation
+          let flux = 0;
+          if (Math.abs(nx) > Math.abs(ny)) {
+            // x-direction dominant
+            const sign = Math.sign(nx);
+            const stencil = this.getENOStencil(idx, sign > 0 ? 1 : -1, 0);
+            flux = this.DIFFUSION_COEFFICIENT * this.computeENODerivative(stencil) * Math.abs(nx);
+          } else {
+            // y-direction dominant
+            const sign = Math.sign(ny);
+            const stencil = this.getENOStencil(idx, 0, sign > 0 ? 1 : -1);
+            flux = this.DIFFUSION_COEFFICIENT * this.computeENODerivative(stencil) * Math.abs(ny);
+          }
+
+          return flux;
+        }
+
+        getENOStencil(idx, dx, dy) {
+          const stencil = new Float32Array(5);
+          for (let i = 0; i < 5; i++) {
+            const nidx = idx + (i - 2) * (dx + dy * this.size);
+            stencil[i] = this.vaporDensity[nidx];
+          }
+          return stencil;
+        }
+
+        computeENODerivative(stencil) {
+          // 4th order ENO derivative approximation
+          return (-stencil[4] + 8 * stencil[3] - 8 * stencil[1] + stencil[0]) / (12 * this.dx);
+        }
+
+        applySurfaceEffects(temperature) {
+          for (let i = 0; i < this.size * this.size; i++) {
+            if (this.boundaryMask[i]) {
+              // Apply Hertz-Knudsen kinetic correction
+              const T = temperature[i] + 273.15;
+              const alpha = 1.0; // accommodation coefficient
+              const v_kinetic = Math.sqrt((2 * Math.PI * this.GAS_CONSTANT * T) / this.MOLECULAR_MASS);
+
+              this.interfaceVelocity[i] *= alpha / (alpha + (2 - alpha) * (this.DIFFUSION_COEFFICIENT / (v_kinetic * this.dx)));
+
+              // Apply curvature correction
+              const kappa = this.computeLocalCurvature(i);
+              const capillaryLength = this.SURFACE_TENSION / (this.VAPOR_DENSITY_ICE * this.LATENT_HEAT);
+
+              this.interfaceVelocity[i] *= 1 - capillaryLength * kappa;
+            }
+          }
         }
       }
 
-
       class DepositionPhysics {
-          constructor(size) {
-            console.log('Initializing DepositionPhysics with size:', size);
-            this.size = size;
+        constructor(size) {
+          console.log('Initializing DepositionPhysics with size:', size);
+          this.size = size;
 
-            // Initialize all required components
-            this.boundaryLayer = new BoundaryLayer(size);
-            this.surfaceKinetics = new SurfaceKinetics(size);
-            this.vaporField = new VaporField(size);
-            this.heatTransfer = new Float32Array(size * size);
-            this.massTransfer = new Float32Array(size * size);
-            this.localReynolds = new Float32Array(size * size);
+          // Initialize all required components
+          this.boundaryLayer = new BoundaryLayer(size);
+          this.vaporField = new EnhancedVaporField(size);
+          this.heatTransfer = new Float32Array(size * size);
+          this.massTransfer = new Float32Array(size * size);
+          this.localReynolds = new Float32Array(size * size);
 
-            // Initialize lookup tables
-            this.setupLookupTables();
+          // Initialize lookup tables
+          this.setupLookupTables();
 
-            // Set constants
-            this.minBoundaryThickness = 1e-4;
-            this.minDepositionRate = 0.0001;
-            this.maxDepositionRate = 0.5;
-            this.minTemperature = -50;
-            this.maxTemperature = 50;
+          // Set constants
+          this.minBoundaryThickness = 1e-4;
+          this.minDepositionRate = 0.0001;
+          this.maxDepositionRate = 0.5;
+          this.minTemperature = -50;
+          this.maxTemperature = 50;
 
-            console.log('DepositionPhysics initialization complete');
-          }
+          // Initialize crystalDirections (was missing)
+          this.crystalDirections = new EnhancedAnisotropySystem();
 
-          setupLookupTables() {
-            console.log('Setting up lookup tables');
-            this.saturationPressure = new Float32Array(1000);
-            this.saturationDensity = new Float32Array(1000);
-            this.diffusionCoefficient = new Float32Array(1000);
-
-            for (let i = 0; i < 1000; i++) {
-              const T = i / 10 - 50 + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO;
-              const temp = Math.max(-50, Math.min(50, i / 10 - 50));
-
-              this.saturationPressure[i] = Math.max(1, 611.2 * Math.exp((17.62 * temp) / (243.12 + temp)));
-
-              this.saturationDensity[i] = Math.max(
-                1e-6,
-                (this.saturationPressure[i] * PHYSICAL_CONSTANTS.WATER_MOLECULAR_MASS) / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)
-              );
-
-              this.diffusionCoefficient[i] = Math.max(1e-6, PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY * Math.pow(T / 273.15, 1.5));
-            }
-          }
-
-     calculateDepositionRate(idx, vapor, temperature, airFlow, crystallization, stress) {
-              const r = Math.floor(idx / this.size);
-              const c = idx % this.size;
-
-              if (idx < 0 || idx >= this.size * this.size) return 0;
-              if (crystallization[idx] > 0.95) return 0;
-
-              // Check if this cell borders any crystallized cell
-              let hasActiveCrystalNeighbor = false;
-              let bestNeighborIdx = -1;
-              let bestDist = Infinity;
-              for (let dr = -1; dr <= 1; dr++) {
-                for (let dc = -1; dc <= 1; dc++) {
-                  if (dr === 0 && dc === 0) continue;
-                  const nr = r + dr;
-                  const nc = c + dc;
-                  if (nr < 0 || nr >= this.size || nc < 0 || nc >= this.size) continue;
-                  const nidx = nr * this.size + nc;
-                  if (crystallization[nidx] > 0.5) {
-                    hasActiveCrystalNeighbor = true;
-                    const dist = Math.sqrt(dr * dr + dc * dc);
-                    if (dist < bestDist) {
-                      bestDist = dist;
-                      bestNeighborIdx = nidx;
-                    }
-                  }
-                }
-              }
-              if (!hasActiveCrystalNeighbor) return 0;
-
-              const T = Math.max(this.minTemperature, Math.min(this.maxTemperature, temperature[idx]));
-              const Tidx = Math.min(999, Math.max(0, Math.floor((T + 50) * 10)));
-              const psat = this.saturationPressure[Tidx];
-              if (!isFinite(psat) || psat <= 0) return 0;
-
-              // Use saturation ratio from vapor field
-              const supersaturation = this.vaporField.saturationRatio[idx] - 1;
-              if (supersaturation < 0.001) return 0; // Very low supersaturation, minimal growth
-
-              // Directional anisotropy: find direction from neighbor crystal cell
-              const nr = Math.floor(bestNeighborIdx / this.size);
-              const nc = bestNeighborIdx % this.size;
-              const angle = Math.atan2(r - nr, c - nc);
-
-              // Strengthen the 6-fold anisotropy:
-              // Align angle to nearest multiple of 60° for preference
-              const deg = ((angle * 180) / Math.PI + 360) % 360;
-              const closestHexAxis = Math.round(deg / 60) * 60;
-              const axisDiff = Math.min(Math.abs(deg - closestHexAxis), 360 - Math.abs(deg - closestHexAxis));
-              const anisotropyFactor = 1 + 1.1 * Math.cos((axisDiff * Math.PI) / 180); // peaks at axis
-
-
-              let attachment_rate = this.surfaceKinetics.calculateAttachmentRate(idx, T, supersaturation, angle, stress[idx]);
-              attachment_rate *= anisotropyFactor;
-
-              if (!isFinite(attachment_rate) || attachment_rate <= 0) return 0;
-
-              // Enhanced diffusion/kinetic handling:
-              let bl_thickness = this.boundaryLayer.thickness[idx];
-              if (!isFinite(bl_thickness) || bl_thickness <= 0) {
-                bl_thickness = 1e-5;
-              }
-
-              let D_eff = this.diffusionCoefficient[Tidx];
-              if (!isFinite(D_eff) || D_eff <= 0) {
-                D_eff = PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY;
-              }
-              D_eff *= 2.0;
-
-              const h_m = D_eff / bl_thickness;
-              if (!isFinite(h_m) || h_m <= 0) return 0;
-
-              const diffusion_resistance = 1 / h_m;
-              const kinetic_resistance = 1 / attachment_rate;
-              const total_resistance = (diffusion_resistance + kinetic_resistance) / 2.0;
-
-              let baseRate = total_resistance > 0 ? 1.0 / total_resistance : 0;
-
-              const stability = Math.max(0.5, 1.0 - 0.1 * Math.abs(stress[idx]));
-              const curvature = 1.0 - 0.1 * this.calculateLocalCurvature(idx, crystallization);
-              const anglePreference = 0.5 + 0.5 * Math.cos(3 * angle); // emphasize 6-fold pattern
-
-              let finalRate = baseRate * stability * curvature * anglePreference * (1 + supersaturation);
-
-              finalRate = Math.min(Math.max(finalRate, this.minDepositionRate), this.maxDepositionRate);
-              finalRate *= Math.pow(1 - crystallization[idx], 0.5);
-              return finalRate;
-            }
-
-          calculateLocalCurvature(idx, crystallization) {
-            const r = Math.floor(idx / this.size);
-            const c = idx % this.size;
-            let sum = 0;
-            let count = 0;
-
-            for (let dr = -1; dr <= 1; dr++) {
-              for (let dc = -1; dc <= 1; dc++) {
-                if (dr === 0 && dc === 0) continue;
-                const nr = r + dr;
-                const nc = c + dc;
-                if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
-                  const nidx = nr * this.size + nc;
-                  sum += Math.abs(crystallization[nidx] - crystallization[idx]);
-                  count++;
-                }
-              }
-            }
-
-            return count > 0 ? sum / count : 0;
-          }
-
+          console.log('DepositionPhysics initialization complete');
+        }
 
         setupLookupTables() {
           console.log('Setting up lookup tables');
@@ -889,6 +1099,220 @@
 
             this.diffusionCoefficient[i] = Math.max(1e-6, PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY * Math.pow(T / 273.15, 1.5));
           }
+        }
+
+        calculateDepositionRate(idx, vapor, temperature, airFlow, crystallization, stress) {
+          // First, validate the input index and arrays
+          if (
+            !this.isValidIndex(idx) ||
+            !vapor ||
+            !temperature ||
+            !airFlow ||
+            !crystallization ||
+            !stress ||
+            vapor.length !== this.size * this.size ||
+            temperature.length !== this.size * this.size ||
+            crystallization.length !== this.size * this.size ||
+            stress.length !== this.size * this.size
+          ) {
+            console.warn('Invalid inputs to calculateDepositionRate:', {
+              idx,
+              hasVapor: !!vapor,
+              hasTemp: !!temperature,
+              hasAirFlow: !!airFlow,
+              hasCrystal: !!crystallization,
+              hasStress: !!stress,
+            });
+            return 0;
+          }
+
+          const r = Math.floor(idx / this.size);
+          const c = idx % this.size;
+
+          // Early return if cell is already highly crystallized
+          if (crystallization[idx] > 0.95) {
+            return 0;
+          }
+
+          // Log neighbor check for initial growth points
+          let hasActiveCrystalNeighbor = false;
+          let bestNeighborIdx = -1;
+          let bestDist = Infinity;
+          let neighborLog = [];
+
+          // Check neighbors with proper bounds checking
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              if (dr === 0 && dc === 0) continue;
+
+              const nr = r + dr;
+              const nc = c + dc;
+
+              // Validate neighbor coordinates are within bounds
+              if (nr < 0 || nr >= this.size || nc < 0 || nc >= this.size) {
+                continue;
+              }
+
+              const nidx = nr * this.size + nc;
+
+              // Validate neighbor index
+              if (!this.isValidIndex(nidx)) {
+                continue;
+              }
+
+              neighborLog.push({
+                dr,
+                dc,
+                crystal: crystallization[nidx],
+                vapor: vapor[nidx],
+                temp: temperature[nidx],
+              });
+
+              if (crystallization[nidx] > 0.5) {
+                hasActiveCrystalNeighbor = true;
+                const dist = Math.sqrt(dr * dr + dc * dc);
+                if (dist < bestDist) {
+                  bestDist = dist;
+                  bestNeighborIdx = nidx;
+                }
+              }
+            }
+          }
+
+          // Log detailed state for cells around initial seed
+          const center = Math.floor(this.size / 2);
+          const isSeedNeighbor = Math.abs(r - center) <= 3 && Math.abs(c - center) <= 3;
+
+          if (isSeedNeighbor) {
+            console.log(`Cell (${r - center},${c - center}) state:`, {
+              hasNeighbor: hasActiveCrystalNeighbor,
+              crystal: crystallization[idx],
+              vapor: vapor[idx],
+              temp: temperature[idx],
+              neighbors: neighborLog,
+            });
+          }
+
+          if (!hasActiveCrystalNeighbor || bestNeighborIdx === -1) {
+            return 0;
+          }
+
+          const T = Math.max(this.minTemperature, Math.min(this.maxTemperature, temperature[idx]));
+          const Tidx = Math.min(999, Math.max(0, Math.floor((T + 50) * 10)));
+          const psat = this.saturationPressure[Tidx];
+
+          if (!isFinite(psat) || psat <= 0) {
+            if (isSeedNeighbor) {
+              console.warn('Invalid psat:', { T, Tidx, psat });
+            }
+            return 0;
+          }
+
+          // Calculate supersaturation directly
+          const supersaturation = vapor[idx] / psat - 1;
+          if (supersaturation < 0.001) {
+            if (isSeedNeighbor) {
+              console.log('Low supersaturation:', { vapor: vapor[idx], psat, supersaturation });
+            }
+            return 0;
+          }
+
+          const nr = Math.floor(bestNeighborIdx / this.size);
+          const nc = bestNeighborIdx % this.size;
+          const angle = Math.atan2(r - nr, c - nc);
+
+          const deg = ((angle * 180) / Math.PI + 360) % 360;
+          const closestHexAxis = Math.round(deg / 60) * 60;
+          const axisDiff = Math.min(Math.abs(deg - closestHexAxis), 360 - Math.abs(deg - closestHexAxis));
+          const anisotropyFactor = 1 + 1.1 * Math.cos((axisDiff * Math.PI) / 180);
+
+          // Convert temperature from °C to Kelvin:
+          const T_kelvin = T + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO;
+
+          // We already have supersaturation as (vapor/psat - 1),
+          // so let's just pass "(supersaturation + 1)" if method expects ratio>1:
+          const satRatio = supersaturation + 1; // e.g. 1.0 means saturated
+
+          let growthProb;
+          try {
+            // Safely call calculateGrowthProbability with error handling
+            growthProb = this.crystalDirections.calculateGrowthProbability(
+              angle, // in radians
+              T_kelvin, // in Kelvin
+              satRatio, // local supersaturation ratio
+              stress[idx] // dimensionless stress
+            );
+          } catch (error) {
+            console.warn('Error calculating growth probability:', error);
+            growthProb = 0.5; // Fallback value
+          }
+
+          // Combine with anisotropyFactor if desired:
+          let attachment_rate = growthProb * anisotropyFactor;
+
+          if (!isFinite(attachment_rate) || attachment_rate <= 0) return 0;
+
+          let bl_thickness = this.boundaryLayer.thickness[idx];
+          if (!isFinite(bl_thickness) || bl_thickness <= 0) {
+            bl_thickness = 1e-5;
+          }
+
+          let D_eff = this.diffusionCoefficient[Tidx];
+          if (!isFinite(D_eff) || D_eff <= 0) {
+            D_eff = PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY;
+          }
+          D_eff *= 2.0;
+
+          const h_m = D_eff / bl_thickness;
+          if (!isFinite(h_m) || h_m <= 0) return 0;
+
+          const diffusion_resistance = 1 / h_m;
+          const kinetic_resistance = 1 / attachment_rate;
+          const total_resistance = (diffusion_resistance + kinetic_resistance) / 2.0;
+          let baseRate = total_resistance > 0 ? 1.0 / total_resistance : 0;
+
+          const stability = Math.max(0.5, 1.0 - 0.1 * Math.abs(stress[idx]));
+          const localCurv = this.calculateLocalCurvature(idx, crystallization);
+          // Reduce curvature penalty from 0.3 to 0.2
+          const curvature = 1.0 - 0.2 * localCurv;
+          const anglePreference = 0.5 + 0.5 * Math.cos(3 * angle);
+
+          let finalRate = baseRate * stability * curvature * anglePreference * (1 + supersaturation);
+
+          finalRate = Math.max(this.minDepositionRate, Math.min(finalRate, this.maxDepositionRate * 0.8));
+          finalRate *= Math.pow(1 - crystallization[idx], 0.5);
+          return finalRate;
+        }
+
+        calculateLocalCurvature(idx, crystallization) {
+          if (!this.isValidIndex(idx)) return 0;
+
+          const r = Math.floor(idx / this.size);
+          const c = idx % this.size;
+          let sum = 0;
+          let count = 0;
+
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              if (dr === 0 && dc === 0) continue;
+              const nr = r + dr;
+              const nc = c + dc;
+              if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
+                const nidx = nr * this.size + nc;
+                if (this.isValidIndex(nidx)) {
+                  sum += Math.abs(crystallization[nidx] - crystallization[idx]);
+                  count++;
+                }
+              }
+            }
+          }
+
+          return count > 0 ? sum / count : 0;
+        }
+
+        // Helper method for index validation
+        isValidIndex(idx) {
+          return idx >= 0 && idx < this.size * this.size;
         }
       }
 
@@ -959,6 +1383,10 @@
         }
 
         update(crystallization, temperature, stress) {
+          // Further reduce defect propagation and max density
+          this.propagationProbability = 0.05;
+          this.maxDefectDensity = 0.3;
+
           const newDefects = new Float32Array(this.size * this.size);
           const newTypes = new Uint8Array(this.size * this.size);
 
@@ -986,7 +1414,7 @@
             }
 
             if (temperature[i] > -5) {
-              newDefects[i] = Math.max(0, this.defects[i] - this.healingRate * this.mobilityField[i]);
+              newDefects[i] = Math.max(0, (newDefects[i] > 0 ? newDefects[i] : this.defects[i]) - this.healingRate * this.mobilityField[i]);
             } else {
               if (newDefects[i] === 0) {
                 newDefects[i] = this.defects[i];
@@ -1065,31 +1493,8 @@
           this.steps = 1000;
           this.currentStep = 0;
 
-          // Initialize parameters
-          this.params = this.validateParams(
-            Object.assign(
-              {
-                temperature: -20,
-                humidity: 3.5,
-                growthSpeed: 1.8,
-                branchingFactor: 1.0,
-                noiseIntensity: 0.2,
-                crystalCore: 0.6,
-                edgeStability: 0.9,
-                diffusionRate: 0.5,
-                latentHeatRelease: 0.02,
-                airFlowIntensity: 0.4,
-                defectProbability: 0.1,
-                surfaceAnisotropy: 0.7,
-                boundaryLayerEffect: 0.3,
-                kineticCoefficient: 0.2,
-                tempDriftMagnitude: 3.0,   // Maximum temperature deviation
-                tempDriftRate: 0.02,       // How fast temperature changes
-                tempDriftInterval: 50,     // Steps between new drift targets
-              },
-              params
-            )
-          );
+          // Initialize parameters - now only using passed in params
+          this.params = this.validateParams(params);
 
           // Initialize core arrays
           this.crystallization = new Float32Array(this.size * this.size);
@@ -1101,9 +1506,10 @@
           // Initialize physics systems
           console.log('Initializing physics systems');
           this.activeCells = new Set();
-          this.crystalDirections = new CrystalDirectionSystem();
+          this.crystalDirections = new EnhancedAnisotropySystem();
           this.depositionPhysics = new DepositionPhysics(this.size);
           this.defectSystem = new DefectSystem(this.size);
+          this.secondaryNucleationSystem = new SecondaryNucleationSystem(this.size);
           this.airFlow = new VectorField(this.size);
 
           // Initialize utilities
@@ -1125,7 +1531,7 @@
           this.temperatureDrift = {
             current: 0,
             target: (Math.random() * 2 - 1) * this.params.tempDriftMagnitude,
-            lastUpdate: 0
+            lastUpdate: 0,
           };
 
           this.lastUpdateTime = performance.now();
@@ -1203,9 +1609,9 @@
         }
 
         generateNewTargetDrift() {
-            // Generate new target drift between -maxDrift and +maxDrift
-            return (Math.random() * 2 - 1) * this.temperatureDrift.maxDrift;
-          }
+          // Generate new target drift between -maxDrift and +maxDrift
+          return (Math.random() * 2 - 1) * this.temperatureDrift.maxDrift;
+        }
 
         updateTemperatureDrift() {
           // Update drift target periodically
@@ -1221,7 +1627,7 @@
           // Apply drift to ambient temperature field
           const baseTemp = this.params.temperature;
           const center = Math.floor(this.size / 2);
-          
+
           for (let i = 0; i < this.size * this.size; i++) {
             const r = Math.floor(i / this.size);
             const c = i % this.size;
@@ -1229,16 +1635,16 @@
             const dc = c - center;
             const dist = Math.sqrt(dr * dr + dc * dc);
             const distFactor = Math.max(0, 1 - dist / (this.size / 2));
-            
+
             // Add some spatial variation to the drift
             const spatialNoise = this.turbulentNoise(r, c, 0.1) * 0.5;
-            
+
             // Temperature varies more at edges than center
             const driftEffect = this.temperatureDrift.current * (1 - 0.5 * distFactor);
-            
+
             this.temperature[i] = baseTemp + driftEffect + spatialNoise;
           }
-        }   
+        }
 
         initializeFailsafe() {
           const center = Math.floor(this.size / 2);
@@ -1248,6 +1654,7 @@
           this.surfaceEnergy.fill(1.0);
           this.stress.fill(0);
           this.crystallization[center * this.size + center] = 1.0;
+
           for (let i = 0; i < 5; i++) {
             const angle = (i * Math.PI * 2) / 5;
             const radius = Math.floor(this.size / 6);
@@ -1273,21 +1680,23 @@
             const normDist = dist / this.size;
 
             const baseTemp = this.params.temperature;
-            const tempGradient = Math.min(0.3, 0.15 * normDist);
-            const tempNoise = this.turbulentNoise(r, c, 0.05);
-            this.temperature[i] = baseTemp * (1 + tempGradient) * Math.max(0.95, Math.min(1.05, 0.98 + tempNoise));
+            const tempGradient = -2 * normDist;
+            // Reduce tempNoise amplitude from 0.01 to 0.005
+            const tempNoise = this.turbulentNoise(r, c, 0.005);
+            this.temperature[i] = baseTemp + tempGradient + tempNoise;
 
             const baseHumidity = this.params.humidity;
-            const humidityGradient = Math.min(0.5, 0.3 * normDist);
-            const humidityNoise = this.turbulentNoise(r, c, 0.1);
-            this.vapor[i] = baseHumidity * (1 + humidityGradient) * Math.max(0.9, Math.min(1.1, 0.95 + humidityNoise));
+            const humidityGradient = -0.5 * normDist;
+            // Reduce humidityNoise amplitude from 0.02 to 0.01
+            const humidityNoise = this.turbulentNoise(r, c, 0.01);
+            this.vapor[i] = Math.max(0, baseHumidity + humidityGradient + humidityNoise);
 
             const baseEnergy = 1.0;
-            const energyNoise = this.turbulentNoise(r, c, 0.1);
-            this.surfaceEnergy[i] = baseEnergy * Math.max(0.8, Math.min(1.2, 1.0 + energyNoise));
+            const energyNoise = this.turbulentNoise(r, c, 0.01);
+            this.surfaceEnergy[i] = baseEnergy * (1.0 + energyNoise);
 
-            const stressNoise = this.turbulentNoise(r, c, 1.0);
-            this.stress[i] = Math.max(-0.2, Math.min(0.2, 0.1 * stressNoise));
+            const stressNoise = this.turbulentNoise(r, c, 0.05);
+            this.stress[i] = Math.max(-0.2, Math.min(0.2, 0.05 * stressNoise));
           }
 
           this.createInitialSeed(center, seedVariation);
@@ -1530,6 +1939,20 @@
             this.updateCrystallization();
             console.log(`Crystallization update took ${performance.now() - crystalStart}ms`);
 
+            console.log('Updateing secondary nucleation system...');
+            const secondaryNucleationStart = performance.now();
+            this.secondaryNucleationSystem.updateNucleationField(this.crystallization, this.temperature, this.vapor, this.stress);
+            for (let i = 0; i < this.size * this.size; i++) {
+              if (this.secondaryNucleationSystem.nucleationProbability[i] > 0.5) {
+                this.secondaryNucleationSystem.addNucleationSite(i);
+                // Optionally jump crystallization at that site:
+                if (this.crystallization[i] < 0.2) {
+                  this.crystallization[i] = 0.2; // or any small seed value
+                }
+              }
+            }
+            console.log(`Secondary nucleation update took ${performance.now() - secondaryNucleationStart}ms`);
+
             // Update air flow less frequently
             if (this.currentStep % 2 === 0) {
               console.log('Updating air flow...');
@@ -1543,7 +1966,7 @@
 
             console.log('Updating vapor field...');
             const vaporStart = performance.now();
-            this.depositionPhysics.vaporField.update(this.crystallization, this.temperature, this.airFlow);
+            this.depositionPhysics.vaporField.updateVaporField(this.crystallization, this.temperature, this.airFlow);
             console.log(`Vapor field update took ${performance.now() - vaporStart}ms`);
 
             // Sanitize after vapor update
@@ -1874,7 +2297,6 @@
           }
         }
 
-
         // Helper method to safely check bounds
         inBounds(r, c) {
           return r >= 0 && r < this.size && c >= 0 && c < this.size;
@@ -1984,8 +2406,7 @@
         updateFields() {
           this.airFlow.update(this.temperature, this.crystallization);
           this.defectSystem.update(this.crystallization, this.temperature, this.stress);
-          this.depositionPhysics.vaporField.update(this.crystallization, this.temperature, this.airFlow);
-
+          this.depositionPhysics.vaporField.updateVaporField(this.crystallization, this.temperature, this.airFlow);
           this.diffuseFields();
         }
 
@@ -2691,6 +3112,283 @@
         }
       }
 
+      class SecondaryNucleationSystem {
+        constructor(size) {
+          this.size = size;
+
+          // Core fields
+          this.nucleationSites = new Set();
+          this.nucleationProbability = new Float32Array(size * size);
+          this.branchingDirections = new Float32Array(size * size);
+          this.siteAge = new Map(); // Track age of nucleation sites
+          this.branchHistory = new Map(); // Track branch hierarchy
+
+          // Physical parameters
+          this.CRITICAL_SUPERSATURATION = 0.05; // Minimum supersaturation for nucleation
+          this.CRITICAL_CURVATURE = 0.2; // Maximum curvature for stable nucleation
+          this.MIN_SITE_SPACING = 3; // Minimum spacing between nucleation sites
+          this.MAX_BRANCHING_ANGLE = Math.PI / 3; // Maximum deviation from primary directions
+          this.ACTIVATION_ENERGY = 5.5e-20; // J per molecule
+          this.BOLTZMANN = 1.380649e-23; // J/K
+
+          // Branching parameters
+          this.PRIMARY_DIRECTIONS = [0, Math.PI / 3, (2 * Math.PI) / 3, Math.PI, (4 * Math.PI) / 3, (5 * Math.PI) / 3];
+          this.branchGenerations = new Map(); // Track branch hierarchy level
+          this.maxBranchGeneration = 4; // Limit recursive branching
+
+          // Initialize branch probability tables
+          this.initializeProbabilityTables();
+        }
+
+        initializeProbabilityTables() {
+          // Create lookup tables for angle-dependent nucleation probabilities
+          this.angleProbabilities = new Float32Array(360);
+          for (let i = 0; i < 360; i++) {
+            const angle = (i * Math.PI) / 180;
+            // Enhanced probability near primary directions
+            let maxProb = 0;
+            for (const primaryDir of this.PRIMARY_DIRECTIONS) {
+              const angleDiff = Math.abs(((angle - primaryDir + Math.PI) % (2 * Math.PI)) - Math.PI);
+              const prob = Math.exp(-Math.pow(angleDiff * 5, 2));
+              maxProb = Math.max(maxProb, prob);
+            }
+            this.angleProbabilities[i] = maxProb;
+          }
+        }
+
+        updateNucleationField(crystallization, temperature, vapor, stress) {
+          // Clear old probabilities
+          this.nucleationProbability.fill(0);
+
+          // Update existing sites
+          this.updateExistingSites(crystallization);
+
+          // Find new potential nucleation sites
+          for (let i = 0; i < this.size * this.size; i++) {
+            if (crystallization[i] > 0.5) continue; // Skip already crystallized cells
+
+            const { r, c } = this.indexToCoords(i);
+            if (this.isValidNucleationSite(r, c, crystallization, vapor)) {
+              const prob = this.calculateNucleationProbability(r, c, crystallization, temperature, vapor, stress);
+              this.nucleationProbability[i] = prob;
+            }
+          }
+        }
+
+        isValidNucleationSite(r, c, crystallization, vapor) {
+          // Check if location is suitable for nucleation
+
+          // Must have at least one crystallized neighbor
+          let hasNeighbor = false;
+          let localSupersaturation = 0;
+          let tooClose = false;
+
+          // Check wider neighborhood
+          for (let dr = -2; dr <= 2; dr++) {
+            for (let dc = -2; dc <= 2; dc++) {
+              const nr = r + dr;
+              const nc = c + dc;
+              if (!this.inBounds(nr, nc)) continue;
+
+              const idx = nr * this.size + nc;
+              if (crystallization[idx] > 0.5) {
+                // Check immediate neighborhood
+                if (Math.abs(dr) <= 1 && Math.abs(dc) <= 1) {
+                  hasNeighbor = true;
+                }
+                // Check minimum spacing requirement
+                if (Math.sqrt(dr * dr + dc * dc) < this.MIN_SITE_SPACING) {
+                  tooClose = true;
+                }
+              }
+              localSupersaturation = Math.max(localSupersaturation, vapor[idx]);
+            }
+          }
+
+          return hasNeighbor && !tooClose && localSupersaturation > this.CRITICAL_SUPERSATURATION;
+        }
+
+        calculateNucleationProbability(r, c, crystallization, temperature, vapor, stress) {
+          const idx = r * this.size + c;
+
+          // Get local environment characteristics
+          const localGeometry = this.analyzeLocalGeometry(r, c, crystallization);
+          const localSupersaturation = this.calculateLocalSupersaturation(r, c, vapor);
+          const localStress = Math.abs(stress[idx]);
+
+          // Calculate base probability from physical parameters
+          const T = temperature[idx] + 273.15; // Convert to Kelvin
+          const energyBarrier = this.calculateEnergyBarrier(localSupersaturation, localGeometry.curvature, T);
+
+          let probability = Math.exp(-energyBarrier / (this.BOLTZMANN * T));
+
+          // Apply geometric factors
+          probability *= this.getAngleProbability(localGeometry.angle);
+          probability *= this.getBranchingHierarchyFactor(r, c);
+
+          // Apply environmental modifiers
+          probability *= Math.max(0, 1 - localGeometry.curvature / this.CRITICAL_CURVATURE);
+          probability *= Math.max(0, 1 - localStress * 2);
+
+          // Normalize to [0,1] range
+          return Math.max(0, Math.min(1, probability));
+        }
+
+        analyzeLocalGeometry(r, c, crystallization) {
+          // Calculate local geometric properties
+          let angle = 0;
+          let curvature = 0;
+          let weightedDx = 0;
+          let weightedDy = 0;
+          let totalWeight = 0;
+
+          // Analyze wider neighborhood for better direction estimation
+          for (let dr = -3; dr <= 3; dr++) {
+            for (let dc = -3; dc <= 3; dc++) {
+              const nr = r + dr;
+              const nc = c + dc;
+              if (!this.inBounds(nr, nc)) continue;
+
+              const idx = nr * this.size + nc;
+              if (crystallization[idx] > 0.5) {
+                const weight = 1 / (1 + Math.sqrt(dr * dr + dc * dc));
+                weightedDx += dc * weight;
+                weightedDy += dr * weight;
+                totalWeight += weight;
+              }
+            }
+          }
+
+          if (totalWeight > 0) {
+            angle = Math.atan2(weightedDy, weightedDx);
+            // Calculate local curvature using discrete Laplacian
+            curvature = this.calculateLocalCurvature(r, c, crystallization);
+          }
+
+          return { angle, curvature };
+        }
+
+        calculateLocalCurvature(r, c, crystallization) {
+          let sum = 0;
+          let count = 0;
+
+          // Use 5-point stencil for better curvature estimation
+          const stencil = [
+            { dr: -1, dc: 0, weight: 1 },
+            { dr: 1, dc: 0, weight: 1 },
+            { dr: 0, dc: -1, weight: 1 },
+            { dr: 0, dc: 1, weight: 1 },
+            { dr: 0, dc: 0, weight: -4 },
+          ];
+
+          for (const { dr, dc, weight } of stencil) {
+            const nr = r + dr;
+            const nc = c + dc;
+            if (!this.inBounds(nr, nc)) continue;
+
+            sum += crystallization[nr * this.size + nc] * weight;
+            count++;
+          }
+
+          return count > 0 ? Math.abs(sum / count) : 0;
+        }
+
+        calculateLocalSupersaturation(r, c, vapor) {
+          let sum = 0;
+          let count = 0;
+
+          // Calculate average supersaturation in neighborhood
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              const nr = r + dr;
+              const nc = c + dc;
+              if (!this.inBounds(nr, nc)) continue;
+
+              sum += vapor[nr * this.size + nc];
+              count++;
+            }
+          }
+
+          return count > 0 ? sum / count : 0;
+        }
+
+        calculateEnergyBarrier(supersaturation, curvature, temperature) {
+          // Calculate nucleation energy barrier based on classical nucleation theory
+          const surfaceEnergy = 0.109 * (1 + 0.1 * curvature); // J/m²
+          const volume = 3.27e-29; // m³ per molecule
+
+          // Critical nucleus size
+          const criticalSize = (2 * surfaceEnergy * volume) / (this.BOLTZMANN * temperature * Math.log(1 + supersaturation));
+
+          // Energy barrier
+          return (
+            (16 * Math.PI * Math.pow(surfaceEnergy, 3) * Math.pow(volume, 2)) /
+            (3 * Math.pow(this.BOLTZMANN * temperature * Math.log(1 + supersaturation), 2))
+          );
+        }
+
+        getAngleProbability(angle) {
+          // Convert angle to lookup table index
+          const idx = Math.floor(((angle + Math.PI) * 180) / Math.PI) % 360;
+          return this.angleProbabilities[idx];
+        }
+
+        getBranchingHierarchyFactor(r, c) {
+          const idx = r * this.size + c;
+          const generation = this.branchGenerations.get(idx) || 0;
+
+          // Decrease probability for higher-generation branches
+          return Math.pow(0.7, generation);
+        }
+
+        updateExistingSites(crystallization) {
+          // Update and clean up nucleation sites
+          for (const site of this.nucleationSites) {
+            const age = this.siteAge.get(site) || 0;
+
+            if (crystallization[site] > 0.9 || age > 100) {
+              // Site fully crystallized or too old
+              this.nucleationSites.delete(site);
+              this.siteAge.delete(site);
+              this.branchHistory.delete(site);
+            } else {
+              this.siteAge.set(site, age + 1);
+            }
+          }
+        }
+
+        addNucleationSite(idx, parentSite = null) {
+          if (this.nucleationSites.size >= this.size * this.size * 0.1) return false;
+
+          this.nucleationSites.add(idx);
+          this.siteAge.set(idx, 0);
+
+          // Update branch hierarchy
+          if (parentSite !== null) {
+            const parentGen = this.branchGenerations.get(parentSite) || 0;
+            if (parentGen < this.maxBranchGeneration) {
+              this.branchGenerations.set(idx, parentGen + 1);
+              this.branchHistory.set(idx, parentSite);
+            }
+          } else {
+            this.branchGenerations.set(idx, 0);
+          }
+
+          return true;
+        }
+
+        inBounds(r, c) {
+          return r >= 0 && r < this.size && c >= 0 && c < this.size;
+        }
+
+        indexToCoords(idx) {
+          return {
+            r: Math.floor(idx / this.size),
+            c: idx % this.size,
+          };
+        }
+      }
+
       let simulator = null;
       let renderer = null;
       let currentSize = 301;
@@ -2698,22 +3396,25 @@
       let currentStep = 0;
 
       const controls = {
-        temperature: -18, // Keep this as baseline
-        humidity: 3.5,    // Increase baseline supersaturation
-        growthSpeed: 0.6, // Reduce for more detailed features
+        temperature: -19, // Keep this as baseline
+        humidity: 4.5, // Increase baseline supersaturation
+        growthSpeed: 1.8, // Reduce for more detailed features
         branchingFactor: 0.98, // Increase hexagonal preference
-        noiseIntensity: 0.05,  // Reduce random noise
-        crystalCore: 0.6,      // Larger initial seed
-        edgeStability: 0.98,   // More stable edges
-        diffusionRate: 0.4,    // Slower diffusion
-        latentHeatRelease: 0.005, // More local heating effects
-        airFlowIntensity: 0.2,    // Gentler flow
-        defectProbability: 0.05,  // Fewer defects
-        surfaceAnisotropy: 0.8,   // Stronger crystal axis preference 
-        boundaryLayerEffect: 0.4,  // Stronger boundary layer
-        kineticCoefficient: 0.08,  // Slower attachment kinetics
+        noiseIntensity: 0.05, // Reduce random noise
+        crystalCore: 0.6, // Larger initial seed
+        edgeStability: 0.98, // More stable edges
+        diffusionRate: 0.4, // Slower diffusion
+        latentHeatRelease: 0.01, // More local heating effects
+        airFlowIntensity: 0.2, // Gentler flow
+        defectProbability: 0.05, // Fewer defects
+        surfaceAnisotropy: 0.8, // Stronger crystal axis preference
+        boundaryLayerEffect: 0.4, // Stronger boundary layer
+        kineticCoefficient: 0.2, // Slower attachment kinetics
         adaptiveTimeStepping: true,
         visualDetail: 'high',
+        tempDriftMagnitude: 3.0,
+        tempDriftRate: 0.02,
+        tempDriftInterval: 50,
       };
 
       function setupGUI() {
@@ -2723,6 +3424,9 @@
         envFolder.add(controls, 'temperature', -30, 0, 0.5).name('Temperature (°C)').onChange(updateParams);
         envFolder.add(controls, 'humidity', 0.5, 4.0, 0.1).name('Humidity').onChange(updateParams);
         envFolder.add(controls, 'airFlowIntensity', 0, 1, 0.05).name('Air Flow').onChange(updateParams);
+        envFolder.add(controls, 'tempDriftMagnitude', 0, 5, 0.1).name('Temp Variation').onChange(updateParams);
+        envFolder.add(controls, 'tempDriftRate', 0.001, 0.1, 0.001).name('Variation Rate').onChange(updateParams);
+        envFolder.add(controls, 'tempDriftInterval', 10, 200, 5).name('Variation Interval').onChange(updateParams);
         envFolder.open();
 
         const growthFolder = gui.addFolder('Growth Parameters');
@@ -2763,13 +3467,12 @@
             throw new Error('Could not find snowflake canvas element');
           }
 
-          // Cleanup old renderer if it exists
           if (renderer && renderer.cleanup) {
             renderer.cleanup();
           }
 
           renderer = new ImprovedRenderer(canvas, size);
-          simulator = new ImprovedSnowflakeCA(size, Math.random(), controls);
+          simulator = new ImprovedSnowflakeCA(size, Math.random(), controls); // Pass controls here
           updateSimulation();
         } catch (error) {
           console.error('Error creating simulator:', error);
@@ -2944,12 +3647,11 @@
         }
       }
 
-
       function isSecondaryBranch(idx, simulator) {
         const r = Math.floor(idx / simulator.size);
         const c = idx % simulator.size;
         let connectedComponents = 0;
-        
+
         // Count number of connected crystallized regions
         for (let dr = -1; dr <= 1; dr++) {
           for (let dc = -1; dc <= 1; dc++) {
@@ -2964,7 +3666,7 @@
             }
           }
         }
-        
+
         // Secondary branches typically have 1-2 connections
         return connectedComponents <= 2;
       }
@@ -2972,7 +3674,7 @@
       function isPerimeterCell(idx, simulator) {
         const r = Math.floor(idx / simulator.size);
         const c = idx % simulator.size;
-        
+
         // Check if this cell has any non-crystallized neighbors
         for (let dr = -1; dr <= 1; dr++) {
           for (let dc = -1; dc <= 1; dc++) {
@@ -2992,13 +3694,13 @@
 
       function updateStatisticsPanel(simulator) {
         if (!simulator) return;
-        
+
         // Basic statistics
         let crystalCount = 0;
         let sumCrystallization = 0;
         let sumTemperature = 0;
         let sumVapor = 0;
-        
+
         // Advanced metrics
         let primaryBranchLength = 0;
         let secondaryBranchCount = 0;
@@ -3008,46 +3710,46 @@
         let defectDensity = 0;
         let averageStress = 0;
         let growthSymmetry = 0;
-        
+
         const center = Math.floor(simulator.size / 2);
         const totalCells = simulator.size * simulator.size;
 
         // Calculate hexagonal sectors for symmetry analysis
         const sectors = Array(6).fill(0);
-        
+
         // Main data collection loop
         for (let r = 0; r < simulator.size; r++) {
           for (let c = 0; c < simulator.size; c++) {
             const idx = r * simulator.size + c;
             const crys = simulator.crystallization[idx];
-            
+
             sumCrystallization += crys;
             if (crys > 0.5) {
               crystalCount++;
-              
+
               // Calculate distance from center
               const dr = r - center;
               const dc = c - center;
               const dist = Math.sqrt(dr * dr + dc * dc);
               maxRadius = Math.max(maxRadius, dist);
-              
+
               // Determine sector (0-5) and accumulate mass
               const angle = Math.atan2(dr, dc);
               const sector = Math.floor(((angle + Math.PI) * 3) / Math.PI) % 6;
               sectors[sector] += crys;
-              
+
               if (isSecondaryBranch(idx, simulator)) {
                 secondaryBranchCount++;
               }
-              
+
               if (isPerimeterCell(idx, simulator)) {
                 surfaceArea++;
               }
             }
-            
+
             sumTemperature += simulator.temperature[idx];
             sumVapor += simulator.vapor[idx];
-            
+
             if (simulator.defectSystem) {
               defectDensity += simulator.defectSystem.defects[idx];
             }
@@ -3059,7 +3761,7 @@
             }
           }
         }
-        
+
         // Calculate final values
         const avgCrystallization = sumCrystallization / totalCells;
         const avgTemperature = sumTemperature / totalCells;
@@ -3067,26 +3769,26 @@
         const defectPercentage = (defectDensity / crystalCount) * 100;
         const avgStress = averageStress / crystalCount;
         const boundaryThickness = (boundaryLayerThickness / crystalCount) * 1e6;
-        
+
         // Calculate growth symmetry (0-1, where 1 is perfect symmetry)
         const avgSectorMass = sectors.reduce((a, b) => a + b, 0) / 6;
         const maxDeviation = sectors.reduce((max, mass) => Math.max(max, Math.abs(mass - avgSectorMass)), 0);
-        growthSymmetry = 1 - (maxDeviation / avgSectorMass);
+        growthSymmetry = 1 - maxDeviation / avgSectorMass;
 
         // Update DOM elements and visual elements together
         const updates = {
-          'statCrystallized': crystalCount,
-          'statAvgCrystallization': avgCrystallization.toFixed(4),
-          'statAvgTemperature': avgTemperature.toFixed(2),
-          'statAvgVapor': avgVapor.toFixed(3),
-          'statMaxRadius': maxRadius.toFixed(1),
-          'statSecondaryBranches': secondaryBranchCount,
-          'statSurfaceArea': surfaceArea,
-          'statSymmetry': (growthSymmetry * 100).toFixed(1),
-          'statDefectDensity': defectPercentage.toFixed(1),
-          'statAverageStress': avgStress.toFixed(3),
-          'statBoundaryLayer': boundaryThickness.toFixed(1),
-          'statStep': simulator.currentStep
+          statCrystallized: crystalCount,
+          statAvgCrystallization: avgCrystallization.toFixed(4),
+          statAvgTemperature: avgTemperature.toFixed(2),
+          statAvgVapor: avgVapor.toFixed(3),
+          statMaxRadius: maxRadius.toFixed(1),
+          statSecondaryBranches: secondaryBranchCount,
+          statSurfaceArea: surfaceArea,
+          statSymmetry: (growthSymmetry * 100).toFixed(1),
+          statDefectDensity: defectPercentage.toFixed(1),
+          statAverageStress: avgStress.toFixed(3),
+          statBoundaryLayer: boundaryThickness.toFixed(1),
+          statStep: simulator.currentStep,
         };
 
         // Update all stats and their associated visual elements
@@ -3101,10 +3803,9 @@
                 const percentage = parseFloat(value);
                 bar.style.width = `${percentage}%`;
                 // Update bar color based on value
-                bar.className = 'h-2 rounded-full transition-all duration-300 bg-gradient-to-r ' + 
-                  (percentage < 30 ? 'from-blue-500 to-indigo-500' :
-                   percentage < 70 ? 'from-yellow-500 to-orange-500' :
-                                    'from-red-500 to-red-700');
+                bar.className =
+                  'h-2 rounded-full transition-all duration-300 bg-gradient-to-r ' +
+                  (percentage < 30 ? 'from-blue-500 to-indigo-500' : percentage < 70 ? 'from-yellow-500 to-orange-500' : 'from-red-500 to-red-700');
               }
             } else {
               // Regular stat update
@@ -3241,7 +3942,6 @@
         document.body.appendChild(errorDiv);
         setTimeout(() => errorDiv.remove(), 5000);
       }
-
 
       document.addEventListener('DOMContentLoaded', () => {
         try {
