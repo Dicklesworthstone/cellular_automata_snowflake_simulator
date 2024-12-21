@@ -1213,24 +1213,41 @@
         }
 
         setupLookupTables() {
-          console.log('Setting up lookup tables');
           this.saturationPressure = new Float32Array(1000);
           this.saturationDensity = new Float32Array(1000);
           this.diffusionCoefficient = new Float32Array(1000);
 
           for (let i = 0; i < 1000; i++) {
-            const T = i / 10 - 50 + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO;
-            const temp = Math.max(-50, Math.min(50, i / 10 - 50));
+            const T = i / 10 - 50; // Temperature in Celsius
+            const T_K = T + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO; // Convert to Kelvin
 
-            this.saturationPressure[i] = Math.max(1, 611.2 * Math.exp((17.62 * temp) / (243.12 + temp)));
+            // Calculate saturation vapor pressure in Pa
+            const P_sat = 611.2 * Math.exp((17.62 * T) / (243.12 + T));
 
-            this.saturationDensity[i] = Math.max(
-              1e-6,
-              (this.saturationPressure[i] * PHYSICAL_CONSTANTS.WATER_MOLECULAR_MASS) / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)
-            );
+            // Convert to vapor density in g/m³
+            this.saturationDensity[i] = (P_sat * PHYSICAL_CONSTANTS.WATER_MOLECULAR_MASS * 1000) / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T_K);
 
-            this.diffusionCoefficient[i] = Math.max(1e-6, PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY * Math.pow(T / 273.15, 1.5));
+            // Store both for reference
+            this.saturationPressure[i] = P_sat;
+            this.diffusionCoefficient[i] = PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY * Math.pow(T_K / 273.15, 1.5);
           }
+        }
+
+        hasActiveCrystalNeighbor(idx, crystallization) {
+          const r = Math.floor(idx / this.size);
+          const c = idx % this.size;
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              if (dr === 0 && dc === 0) continue;
+              const nr = r + dr;
+              const nc = c + dc;
+              if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
+                const nidx = nr * this.size + nc;
+                if (crystallization[nidx] > 0.5) return true;
+              }
+            }
+          }
+          return false;
         }
 
         calculateDepositionRate(idx, vapor, temperature, airFlow, crystallization, stress) {
@@ -1241,6 +1258,7 @@
           const r = Math.floor(idx / this.size);
           const c = idx % this.size;
 
+          // Check for active crystal neighbors
           let hasActiveCrystalNeighbor = false;
           let bestDist = Infinity;
           let bestNeighborIdx = -1;
@@ -1267,60 +1285,78 @@
 
           if (!hasActiveCrystalNeighbor || bestNeighborIdx === -1) return 0;
 
+          // Temperature calculations
           const T = Math.max(this.minTemperature, Math.min(this.maxTemperature, temperature[idx]));
+          const T_K = T + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO;
+
+          // Get cached saturation density
           const Tidx = Math.min(999, Math.max(0, Math.floor((T + 50) * 10)));
+          const rho_sat = this.saturationDensity[Tidx];
 
-          // Cache psat lookups per step
-          let psat;
-          if (this.psatCache.has(Tidx)) {
-            psat = this.psatCache.get(Tidx);
-          } else {
-            psat = this.saturationPressure[Tidx];
-            this.psatCache.set(Tidx, psat);
-          }
+          // Debug logging
+          console.log('Deposition calculation details:', {
+            idx,
+            temperature: T,
+            vapor: vapor[idx],
+            psat: rho_sat,
+            supersaturation: vapor[idx] / rho_sat - 1,
+            stress: stress[idx],
+          });
 
-          if (!isFinite(psat) || psat <= 0) return 0;
-          const supersaturation = vapor[idx] / psat - 1;
-          if (supersaturation < 0.001) return 0;
+          // Calculate supersaturation
+          const supersaturation = vapor[idx] / rho_sat - 1;
+          if (supersaturation < -0.05) return 0; // Allow slight undersaturation
 
+          // Calculate growth angle and probability
           const nr = Math.floor(bestNeighborIdx / this.size);
           const nc = bestNeighborIdx % this.size;
           const angle = Math.atan2(r - nr, c - nc);
-          const T_kelvin = T + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO;
           const satRatio = supersaturation + 1;
 
+          // Calculate growth probability with enhanced sensitivity to supersaturation
           let growthProb;
           try {
-            growthProb = this.crystalDirections.calculateGrowthProbability(angle, T_kelvin, satRatio, stress[idx]);
+            growthProb = this.crystalDirections.calculateGrowthProbability(angle, T_K, satRatio, stress[idx]);
           } catch {
             growthProb = 0.5;
           }
 
-          const anisotropyFactor = 1 + 1.1 * Math.cos(((angle * 180) / Math.PI / 60) * (Math.PI / 180));
+          // Enhanced anisotropy factor
+          const anisotropyFactor = 1 + 1.5 * Math.cos(((angle * 180) / Math.PI / 60) * (Math.PI / 180));
           let attachment_rate = growthProb * anisotropyFactor;
           if (!isFinite(attachment_rate) || attachment_rate <= 0) return 0;
 
+          // Boundary layer calculations
           let bl_thickness = this.boundaryLayer.thickness[idx];
           if (!isFinite(bl_thickness) || bl_thickness <= 0) bl_thickness = 1e-5;
 
+          // Diffusion calculations with temperature dependence
           let D_eff = this.diffusionCoefficient[Tidx];
           if (!isFinite(D_eff) || D_eff <= 0) D_eff = PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY;
-          D_eff *= 2.0;
+          D_eff *= 2.0; // Enhanced diffusion factor
 
+          // Mass transfer coefficient
           const h_m = D_eff / bl_thickness;
           if (!isFinite(h_m) || h_m <= 0) return 0;
 
+          // Calculate resistances with enhanced supersaturation sensitivity
           const diffusion_resistance = 1 / h_m;
-          const kinetic_resistance = 1 / attachment_rate;
+          const kinetic_resistance = 1 / (attachment_rate * Math.pow(1 + supersaturation, 2));
           const total_resistance = (diffusion_resistance + kinetic_resistance) / 2.0;
           let baseRate = total_resistance > 0 ? 1.0 / total_resistance : 0;
-          const stability = Math.max(0.5, 1.0 - 0.1 * Math.abs(stress[idx]));
+
+          // Apply modifying factors with enhanced growth dynamics
+          const stability = Math.max(0.6, 1.0 - 0.08 * Math.abs(stress[idx])); // Reduced stress sensitivity
           const localCurv = this.calculateLocalCurvature(idx, crystallization);
-          const curvature = 1.0 - 0.2 * localCurv;
-          const anglePreference = 0.5 + 0.5 * Math.cos(3 * angle);
-          let finalRate = baseRate * stability * curvature * anglePreference * (1 + supersaturation);
-          finalRate = Math.max(this.minDepositionRate, Math.min(finalRate, this.maxDepositionRate * 0.8));
-          finalRate *= Math.pow(1 - crystallization[idx], 0.5);
+          const curvature = 1.0 - 0.15 * localCurv; // Reduced curvature dampening
+          const anglePreference = 0.5 + 0.7 * Math.cos(3 * angle); // Enhanced directional growth
+
+          // Calculate final rate with stronger supersaturation dependence
+          const growthFactor = Math.pow(1 + supersaturation, 2);
+          let finalRate = baseRate * stability * curvature * anglePreference * growthFactor;
+          finalRate = Math.max(this.minDepositionRate, Math.min(finalRate, this.maxDepositionRate));
+          finalRate *= Math.pow(1 - crystallization[idx], 0.3); // Less dampening near completion
+
           return finalRate;
         }
 
@@ -1889,7 +1925,7 @@
 
             if (this.inBounds(py, px)) {
               const idx = py * this.size + px;
-              this.crystallization[idx] = 0.3; // Reduced initial crystallization
+              this.crystallization[idx] = 0.6; // Reduced initial crystallization
               this.vapor[idx] = this.params.humidity * 0.5; // Allow some vapor
               this.nucleationSites.add(idx);
               this.activeCells.add(idx);
@@ -2097,6 +2133,47 @@
 
         updateCrystallization() {
           console.log('Starting crystallization update...');
+
+          const center = Math.floor(this.size / 2);
+          const centerIdx = center * this.size + center;
+          console.log('Growth Debug:', {
+            step: this.currentStep,
+            activeGrowthSites: this.activeCells?.size || 0,
+            nucleationSites: this.nucleationSites?.size || 0,
+            centerCrystal: this.crystallization[centerIdx],
+            centerTemp: this.temperature[centerIdx],
+            centerVapor: this.vapor[centerIdx],
+            // Sample a few key cells around center
+            neighbors: [
+              {
+                pos: 'center+1',
+                crystal: this.crystallization[centerIdx + 1],
+                vapor: this.vapor[centerIdx + 1],
+                depositionRate: this.depositionPhysics.calculateDepositionRate(
+                  centerIdx + 1,
+                  this.vapor,
+                  this.temperature,
+                  this.airFlow,
+                  this.crystallization,
+                  this.stress
+                ),
+              },
+              {
+                pos: 'center+size',
+                crystal: this.crystallization[centerIdx + this.size],
+                vapor: this.vapor[centerIdx + this.size],
+                depositionRate: this.depositionPhysics.calculateDepositionRate(
+                  centerIdx + this.size,
+                  this.vapor,
+                  this.temperature,
+                  this.airFlow,
+                  this.crystallization,
+                  this.stress
+                ),
+              },
+            ],
+          });
+
           const startTime = performance.now();
           const tempField = this.arrayPool.acquire();
           const vaporField = this.arrayPool.acquire();
@@ -3305,9 +3382,9 @@
       let currentStep = 0;
 
       const controls = {
-        temperature: -19, // Keep this as baseline
-        humidity: 4.5, // Increase baseline supersaturation
-        growthSpeed: 1.8, // Reduce for more detailed features
+        temperature: -18, // Keep this as baseline
+        humidity: 3.5, // Increase baseline supersaturation
+        growthSpeed: 1.0, // Reduce for more detailed features
         branchingFactor: 0.98, // Increase hexagonal preference
         noiseIntensity: 0.05, // Reduce random noise
         crystalCore: 0.6, // Larger initial seed
@@ -3317,7 +3394,7 @@
         airFlowIntensity: 0.2, // Gentler flow
         defectProbability: 0.05, // Fewer defects
         surfaceAnisotropy: 0.8, // Stronger crystal axis preference
-        boundaryLayerEffect: 0.4, // Stronger boundary layer
+        boundaryLayerEffect: 0.3, // Stronger boundary layer
         kineticCoefficient: 0.2, // Slower attachment kinetics
         adaptiveTimeStepping: true,
         visualDetail: 'high',
@@ -3888,4 +3965,3 @@
     </script>
   </body>
 </html>
-
