@@ -39,12 +39,11 @@
         backface-visibility: hidden;
         transform: translateZ(0);
         background: rgba(17, 24, 39, 0.95);
+        width: 600px;
+        height: 600px;
       }
       .glow-effect {
         filter: drop-shadow(0 0 12px rgba(147, 197, 253, 0.6));
-      }
-      .snowflake-canvas:hover {
-        transform: scale(1.05);
       }
       .floating {
         animation: float 6s ease-in-out infinite;
@@ -141,6 +140,140 @@
         <div class="flex justify-center">
           <canvas id="snowflakeCanvas" class="snowflake-canvas aspect-square rounded-xl shadow-lg"></canvas>
         </div>
+        <div id="statisticsPanel" class="mt-6 backdrop-blur-xl bg-gray-900/80 rounded-2xl border border-blue-500/20 overflow-hidden">
+          <!-- Header with gradient and glow -->
+          <div class="bg-gradient-to-r from-blue-900/50 to-indigo-900/50 p-4 border-b border-blue-500/20">
+            <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-indigo-200 filter drop-shadow-lg">
+              Simulation Statistics
+            </h2>
+          </div>
+
+          <!-- Stats Content with Grid Layout -->
+          <div id="statsContent" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Basic Metrics Card -->
+            <div class="bg-gray-800/50 rounded-xl p-4 border border-blue-500/10 hover:border-blue-500/30 transition-colors duration-300">
+              <h3 class="text-lg font-semibold mb-3 text-blue-300 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Basic Metrics
+              </h3>
+              <div class="space-y-2 font-mono text-sm">
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg">
+                  <span class="text-blue-200/80">Crystallized Cells</span>
+                  <span id="statCrystallized" class="text-white font-bold">0</span>
+                </div>
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg">
+                  <span class="text-blue-200/80">Avg. Crystallization</span>
+                  <span id="statAvgCrystallization" class="text-white font-bold">0.00</span>
+                </div>
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg">
+                  <span class="text-blue-200/80">Temperature</span>
+                  <span id="statAvgTemperature" class="text-white font-bold">0.00°C</span>
+                </div>
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg">
+                  <span class="text-blue-200/80">Vapor Concentration</span>
+                  <span id="statAvgVapor" class="text-white font-bold">0.00</span>
+                </div>
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg">
+                  <span class="text-blue-200/80">Step</span>
+                  <span id="statStep" class="text-white font-bold">0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Growth Analysis Card -->
+            <div class="bg-gray-800/50 rounded-xl p-4 border border-blue-500/10 hover:border-blue-500/30 transition-colors duration-300">
+              <h3 class="text-lg font-semibold mb-3 text-blue-300 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Growth Analysis
+              </h3>
+              <div class="space-y-2 font-mono text-sm">
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg group hover:bg-gray-900/70 transition-colors">
+                  <span class="text-blue-200/80">Maximum Radius</span>
+                  <div class="flex items-center">
+                    <span id="statMaxRadius" class="text-white font-bold">0.0</span>
+                    <span class="text-blue-300/60 ml-1">units</span>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg group hover:bg-gray-900/70 transition-colors">
+                  <span class="text-blue-200/80">Secondary Branches</span>
+                  <span id="statSecondaryBranches" class="text-white font-bold">0</span>
+                </div>
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg group hover:bg-gray-900/70 transition-colors">
+                  <span class="text-blue-200/80">Surface Area</span>
+                  <div class="flex items-center">
+                    <span id="statSurfaceArea" class="text-white font-bold">0</span>
+                    <span class="text-blue-300/60 ml-1">cells</span>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg group hover:bg-gray-900/70 transition-colors">
+                  <span class="text-blue-200/80">Symmetry</span>
+                  <div class="flex items-center">
+                    <span id="statSymmetry" class="text-white font-bold">0.0</span>
+                    <span class="text-blue-300/60 ml-1">%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Physical Properties Card -->
+            <div class="bg-gray-800/50 rounded-xl p-4 border border-blue-500/10 hover:border-blue-500/30 transition-colors duration-300">
+              <h3 class="text-lg font-semibold mb-3 text-blue-300 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+                Physical Properties
+              </h3>
+              <div class="space-y-2 font-mono text-sm">
+                <!-- Nice circular progress indicator for defect density -->
+                <div class="bg-gray-900/50 p-3 rounded-lg">
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="text-blue-200/80">Defect Density</span>
+                    <span id="statDefectDensity" class="text-white font-bold">0.0%</span>
+                  </div>
+                  <div class="w-full bg-gray-700/50 rounded-full h-2">
+                    <div id="defectDensityBar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                  </div>
+                </div>
+                
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg hover:bg-gray-900/70 transition-colors">
+                  <span class="text-blue-200/80">Average Stress</span>
+                  <span id="statAverageStress" class="text-white font-bold">0.000</span>
+                </div>
+                
+                <div class="flex justify-between items-center bg-gray-900/50 p-2 rounded-lg hover:bg-gray-900/70 transition-colors">
+                  <span class="text-blue-200/80">Boundary Layer</span>
+                  <div class="flex items-center">
+                    <span id="statBoundaryLayer" class="text-white font-bold">0.0</span>
+                    <span class="text-blue-300/60 ml-1">μm</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer with additional info -->
+          <div class="px-6 py-4 bg-gray-900/50 border-t border-blue-500/10">
+            <div class="flex items-center justify-between text-sm text-blue-200/60">
+              <div class="flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Real-time simulation statistics
+              </div>
+              <div class="flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Updated every frame
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <script>
@@ -269,11 +402,11 @@
               continue;
             }
 
-            const r = Math.floor(i / this.size);
-            const c = i % this.size;
+            if (!isFinite(airFlow.vx[i])) airFlow.vx[i] = 0;
+            if (!isFinite(airFlow.vy[i])) airFlow.vy[i] = 0;
 
-            const vx = airFlow.vx[i] || 0;
-            const vy = airFlow.vy[i] || 0;
+            const vx = Math.min(1, Math.max(-1, airFlow.vx[i]));
+            const vy = Math.min(1, Math.max(-1, airFlow.vy[i]));
             const velocity = Math.sqrt(vx * vx + vy * vy);
 
             if (velocity < 1e-6) {
@@ -371,6 +504,10 @@
         }
 
         calculateAttachmentRate(idx, temperature, supersaturation, angle, stress) {
+          if (!isFinite(temperature) || !isFinite(supersaturation) || !isFinite(angle) || !isFinite(stress)) {
+            return 0;
+          }
+
           // Input validation
           if (idx < 0 || idx >= this.size * this.size) return 0;
           if (!isFinite(temperature) || !isFinite(supersaturation) || !isFinite(angle) || !isFinite(stress)) return 0;
@@ -399,7 +536,7 @@
             const baseActivationEnergy = 5.5e3;
             const stressEffect = Math.max(0.5, Math.min(1.5, 1 + 0.1 * Math.abs(stress)));
             const activation_energy = baseActivationEnergy * stressEffect;
-            
+
             // Calculate beta with bounds
             const beta = Math.max(1e-10, Math.exp(-activation_energy / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)));
 
@@ -416,9 +553,9 @@
             // Temperature-dependent attachment coefficient
             let alpha;
             if (temperature < -10) {
-              alpha = Math.min(1.0, 0.1 * (1 + Math.exp((temperature + 10) / 5)));
+              alpha = Math.min(1.0, 0.2 * (1 + Math.exp((temperature + 10) / 3)));
             } else {
-              alpha = Math.min(1.0, 0.01 * (1 + Math.exp(-temperature / 10)));
+              alpha = Math.min(1.0, 0.05 * (1 + Math.exp(-temperature / 5)));
             }
             alpha = Math.max(0.001, alpha); // Ensure minimum attachment probability
 
@@ -445,7 +582,7 @@
             return 0;
           }
         }
-    };
+      }
 
       class VaporField {
         constructor(size) {
@@ -573,152 +710,165 @@
         }
       }
 
+
       class DepositionPhysics {
-        constructor(size) {
-          console.log('Initializing DepositionPhysics with size:', size);
-          this.size = size;
+          constructor(size) {
+            console.log('Initializing DepositionPhysics with size:', size);
+            this.size = size;
 
-          // Initialize all required components
-          this.boundaryLayer = new BoundaryLayer(size);
-          this.surfaceKinetics = new SurfaceKinetics(size);
-          this.vaporField = new VaporField(size);
-          this.heatTransfer = new Float32Array(size * size);
-          this.massTransfer = new Float32Array(size * size);
-          this.localReynolds = new Float32Array(size * size);
+            // Initialize all required components
+            this.boundaryLayer = new BoundaryLayer(size);
+            this.surfaceKinetics = new SurfaceKinetics(size);
+            this.vaporField = new VaporField(size);
+            this.heatTransfer = new Float32Array(size * size);
+            this.massTransfer = new Float32Array(size * size);
+            this.localReynolds = new Float32Array(size * size);
 
-          // Initialize lookup tables
-          this.setupLookupTables();
+            // Initialize lookup tables
+            this.setupLookupTables();
 
-          // Set constants
-          this.maxDepositionRate = 0.1;
-          this.minTemperature = -50;
-          this.maxTemperature = 50;
+            // Set constants
+            this.minBoundaryThickness = 1e-4;
+            this.minDepositionRate = 0.0001;
+            this.maxDepositionRate = 0.5;
+            this.minTemperature = -50;
+            this.maxTemperature = 50;
 
-          console.log('DepositionPhysics initialization complete');
-        }
-
-        setupLookupTables() {
-          console.log('Setting up lookup tables');
-          this.saturationPressure = new Float32Array(1000);
-          this.saturationDensity = new Float32Array(1000);
-          this.diffusionCoefficient = new Float32Array(1000);
-
-          for (let i = 0; i < 1000; i++) {
-            const T = i / 10 - 50 + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO;
-            const temp = Math.max(-50, Math.min(50, i / 10 - 50));
-
-            this.saturationPressure[i] = Math.max(1, 611.2 * Math.exp((17.62 * temp) / (243.12 + temp)));
-
-            this.saturationDensity[i] = Math.max(
-              1e-6,
-              (this.saturationPressure[i] * PHYSICAL_CONSTANTS.WATER_MOLECULAR_MASS) / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)
-            );
-
-            this.diffusionCoefficient[i] = Math.max(1e-6, PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY * Math.pow(T / 273.15, 1.5));
-          }
-        }
-
-        calculateDepositionRate(idx, vapor, temperature, airFlow, crystallization, stress) {
-          // Validate inputs
-          if (idx < 0 || idx >= this.size * this.size) {
-            console.warn('Invalid cell index:', idx);
-            return 0;
+            console.log('DepositionPhysics initialization complete');
           }
 
-          // Don't calculate for fully crystallized cells
-          if (crystallization[idx] > 0.95) {
-            return 0;
+          setupLookupTables() {
+            console.log('Setting up lookup tables');
+            this.saturationPressure = new Float32Array(1000);
+            this.saturationDensity = new Float32Array(1000);
+            this.diffusionCoefficient = new Float32Array(1000);
+
+            for (let i = 0; i < 1000; i++) {
+              const T = i / 10 - 50 + PHYSICAL_CONSTANTS.ABSOLUTE_ZERO;
+              const temp = Math.max(-50, Math.min(50, i / 10 - 50));
+
+              this.saturationPressure[i] = Math.max(1, 611.2 * Math.exp((17.62 * temp) / (243.12 + temp)));
+
+              this.saturationDensity[i] = Math.max(
+                1e-6,
+                (this.saturationPressure[i] * PHYSICAL_CONSTANTS.WATER_MOLECULAR_MASS) / (PHYSICAL_CONSTANTS.GAS_CONSTANT * T)
+              );
+
+              this.diffusionCoefficient[i] = Math.max(1e-6, PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY * Math.pow(T / 273.15, 1.5));
+            }
           }
 
-          // Check if cell has any crystallized neighbors
-          const r = Math.floor(idx / this.size);
-          const c = idx % this.size;
-          let hasActiveCrystalNeighbor = false;
-          
-          for (let dr = -1; dr <= 1; dr++) {
-            for (let dc = -1; dc <= 1; dc++) {
-              const nr = r + dr;
-              const nc = c + dc;
-              if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
-                const nidx = nr * this.size + nc;
-                if (crystallization[nidx] > 0.5) {
-                  hasActiveCrystalNeighbor = true;
-                  break;
+     calculateDepositionRate(idx, vapor, temperature, airFlow, crystallization, stress) {
+              const r = Math.floor(idx / this.size);
+              const c = idx % this.size;
+
+              if (idx < 0 || idx >= this.size * this.size) return 0;
+              if (crystallization[idx] > 0.95) return 0;
+
+              // Check if this cell borders any crystallized cell
+              let hasActiveCrystalNeighbor = false;
+              let bestNeighborIdx = -1;
+              let bestDist = Infinity;
+              for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                  if (dr === 0 && dc === 0) continue;
+                  const nr = r + dr;
+                  const nc = c + dc;
+                  if (nr < 0 || nr >= this.size || nc < 0 || nc >= this.size) continue;
+                  const nidx = nr * this.size + nc;
+                  if (crystallization[nidx] > 0.5) {
+                    hasActiveCrystalNeighbor = true;
+                    const dist = Math.sqrt(dr * dr + dc * dc);
+                    if (dist < bestDist) {
+                      bestDist = dist;
+                      bestNeighborIdx = nidx;
+                    }
+                  }
+                }
+              }
+              if (!hasActiveCrystalNeighbor) return 0;
+
+              const T = Math.max(this.minTemperature, Math.min(this.maxTemperature, temperature[idx]));
+              const Tidx = Math.min(999, Math.max(0, Math.floor((T + 50) * 10)));
+              const psat = this.saturationPressure[Tidx];
+              if (!isFinite(psat) || psat <= 0) return 0;
+
+              // Use saturation ratio from vapor field
+              const supersaturation = this.vaporField.saturationRatio[idx] - 1;
+              if (supersaturation < 0.001) return 0; // Very low supersaturation, minimal growth
+
+              // Directional anisotropy: find direction from neighbor crystal cell
+              const nr = Math.floor(bestNeighborIdx / this.size);
+              const nc = bestNeighborIdx % this.size;
+              const angle = Math.atan2(r - nr, c - nc);
+
+              // Strengthen the 6-fold anisotropy:
+              // Align angle to nearest multiple of 60° for preference
+              const deg = ((angle * 180) / Math.PI + 360) % 360;
+              const closestHexAxis = Math.round(deg / 60) * 60;
+              const axisDiff = Math.min(Math.abs(deg - closestHexAxis), 360 - Math.abs(deg - closestHexAxis));
+              const anisotropyFactor = 1 + 1.1 * Math.cos((axisDiff * Math.PI) / 180); // peaks at axis
+
+
+              let attachment_rate = this.surfaceKinetics.calculateAttachmentRate(idx, T, supersaturation, angle, stress[idx]);
+              attachment_rate *= anisotropyFactor;
+
+              if (!isFinite(attachment_rate) || attachment_rate <= 0) return 0;
+
+              // Enhanced diffusion/kinetic handling:
+              let bl_thickness = this.boundaryLayer.thickness[idx];
+              if (!isFinite(bl_thickness) || bl_thickness <= 0) {
+                bl_thickness = 1e-5;
+              }
+
+              let D_eff = this.diffusionCoefficient[Tidx];
+              if (!isFinite(D_eff) || D_eff <= 0) {
+                D_eff = PHYSICAL_CONSTANTS.WATER_VAPOR_DIFFUSIVITY;
+              }
+              D_eff *= 2.0;
+
+              const h_m = D_eff / bl_thickness;
+              if (!isFinite(h_m) || h_m <= 0) return 0;
+
+              const diffusion_resistance = 1 / h_m;
+              const kinetic_resistance = 1 / attachment_rate;
+              const total_resistance = (diffusion_resistance + kinetic_resistance) / 2.0;
+
+              let baseRate = total_resistance > 0 ? 1.0 / total_resistance : 0;
+
+              const stability = Math.max(0.5, 1.0 - 0.1 * Math.abs(stress[idx]));
+              const curvature = 1.0 - 0.1 * this.calculateLocalCurvature(idx, crystallization);
+              const anglePreference = 0.5 + 0.5 * Math.cos(3 * angle); // emphasize 6-fold pattern
+
+              let finalRate = baseRate * stability * curvature * anglePreference * (1 + supersaturation);
+
+              finalRate = Math.min(Math.max(finalRate, this.minDepositionRate), this.maxDepositionRate);
+              finalRate *= Math.pow(1 - crystallization[idx], 0.5);
+              return finalRate;
+            }
+
+          calculateLocalCurvature(idx, crystallization) {
+            const r = Math.floor(idx / this.size);
+            const c = idx % this.size;
+            let sum = 0;
+            let count = 0;
+
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                if (dr === 0 && dc === 0) continue;
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
+                  const nidx = nr * this.size + nc;
+                  sum += Math.abs(crystallization[nidx] - crystallization[idx]);
+                  count++;
                 }
               }
             }
-            if (hasActiveCrystalNeighbor) break;
+
+            return count > 0 ? sum / count : 0;
           }
 
-          // Only allow deposition next to existing crystal
-          if (!hasActiveCrystalNeighbor) {
-            return 0;
-          }
-
-          try {
-            // Update boundary layer if needed
-            if (!this.boundaryLayer.cacheValid[idx]) {
-              this.boundaryLayer.update(crystallization, airFlow, temperature, vapor);
-            }
-
-            // Calculate temperature-dependent properties
-            const T = Math.max(this.minTemperature, Math.min(this.maxTemperature, temperature[idx]));
-            const Tidx = Math.min(999, Math.max(0, Math.floor((T + 50) * 10)));
-            const psat = this.saturationPressure[Tidx];
-            const supersaturation = Math.max(-1, Math.min(10, vapor[idx] / psat - 1));
-
-            // Get boundary layer properties
-            const bl_props = this.boundaryLayer.getBoundaryLayerProperties(idx);
-            const D_eff = Math.max(1e-10, this.diffusionCoefficient[Tidx]);
-            const h_m = Math.max(1e-10, D_eff / Math.max(1e-6, bl_props.concentration));
-
-            // Calculate attachment kinetics
-            const center = Math.floor(this.size / 2);
-            const angle = Math.atan2(r - center, c - center);
-            const attachment_rate = this.surfaceKinetics.calculateAttachmentRate(idx, T, supersaturation, angle, stress);
-
-            // Calculate deposition rate components
-            const diffusion_resistance = Math.max(1e-10, 1 / h_m);
-            const kinetic_resistance = Math.max(1e-10, 1 / Math.max(1e-10, attachment_rate));
-
-            // Apply stability factors
-            const stability = Math.max(0.1, 1.0 - 0.5 * Math.abs(stress));
-            const curvature = 1.0 - 0.2 * this.calculateLocalCurvature(idx, crystallization);
-
-            // Calculate final deposition rate with hexagonal anisotropy
-            const baseRate = 1.0 / (diffusion_resistance + kinetic_resistance);
-            const anglePreference = Math.abs(Math.cos(3 * angle)); // Hexagonal symmetry
-            const anisotropicRate = baseRate * stability * curvature * (0.5 + 0.5 * anglePreference);
-
-            return Math.min(this.maxDepositionRate, Math.max(0, anisotropicRate));
-          } catch (error) {
-            console.error('Error in deposition rate calculation:', error);
-            return 0;
-          }
-        }
-
-        calculateLocalCurvature(idx, crystallization) {
-          const r = Math.floor(idx / this.size);
-          const c = idx % this.size;
-          let sum = 0;
-          let count = 0;
-
-          // Calculate average crystallization difference with neighbors
-          for (let dr = -1; dr <= 1; dr++) {
-            for (let dc = -1; dc <= 1; dc++) {
-              if (dr === 0 && dc === 0) continue;
-              const nr = r + dr;
-              const nc = c + dc;
-              if (nr >= 0 && nr < this.size && nc >= 0 && nc < this.size) {
-                const nidx = nr * this.size + nc;
-                sum += Math.abs(crystallization[nidx] - crystallization[idx]);
-                count++;
-              }
-            }
-          }
-
-          return count > 0 ? sum / count : 0;
-        }
 
         setupLookupTables() {
           console.log('Setting up lookup tables');
@@ -919,20 +1069,23 @@
           this.params = this.validateParams(
             Object.assign(
               {
-                temperature: -15,
-                humidity: 2.5,
-                growthSpeed: 0.8,
-                branchingFactor: 0.95,
-                noiseIntensity: 0.08,
-                crystalCore: 0.4,
-                edgeStability: 0.95,
-                diffusionRate: 0.4,
+                temperature: -20,
+                humidity: 3.5,
+                growthSpeed: 1.8,
+                branchingFactor: 1.0,
+                noiseIntensity: 0.2,
+                crystalCore: 0.6,
+                edgeStability: 0.9,
+                diffusionRate: 0.5,
                 latentHeatRelease: 0.02,
-                airFlowIntensity: 0.3,
+                airFlowIntensity: 0.4,
                 defectProbability: 0.1,
-                surfaceAnisotropy: 0.5,
+                surfaceAnisotropy: 0.7,
                 boundaryLayerEffect: 0.3,
-                kineticCoefficient: 0.1,
+                kineticCoefficient: 0.2,
+                tempDriftMagnitude: 3.0,   // Maximum temperature deviation
+                tempDriftRate: 0.02,       // How fast temperature changes
+                tempDriftInterval: 50,     // Steps between new drift targets
               },
               params
             )
@@ -947,7 +1100,7 @@
 
           // Initialize physics systems
           console.log('Initializing physics systems');
-          this.activeCells = new Set(); 
+          this.activeCells = new Set();
           this.crystalDirections = new CrystalDirectionSystem();
           this.depositionPhysics = new DepositionPhysics(this.size);
           this.defectSystem = new DefectSystem(this.size);
@@ -961,10 +1114,19 @@
           // Initialize fields
           try {
             this.initializeFields(seedVariation);
+            this.sanitizeFields();
           } catch (error) {
             console.error('Error initializing fields:', error);
             this.initializeFailsafe();
+            this.sanitizeFields();
           }
+
+          // Initialize drift state
+          this.temperatureDrift = {
+            current: 0,
+            target: (Math.random() * 2 - 1) * this.params.tempDriftMagnitude,
+            lastUpdate: 0
+          };
 
           this.lastUpdateTime = performance.now();
           this.frameTimings = new Array(60).fill(16.67);
@@ -987,8 +1149,96 @@
             surfaceAnisotropy: Math.max(0, Math.min(1, params.surfaceAnisotropy)),
             boundaryLayerEffect: Math.max(0, Math.min(1, params.boundaryLayerEffect)),
             kineticCoefficient: Math.max(0.01, Math.min(1, params.kineticCoefficient)),
+            tempDriftMagnitude: Math.max(0, Math.min(5.0, params.tempDriftMagnitude)),
+            tempDriftRate: Math.max(0.001, Math.min(0.1, params.tempDriftRate)),
+            tempDriftInterval: Math.max(10, Math.min(200, params.tempDriftInterval)),
           };
         }
+
+        sanitizeFields() {
+          for (let i = 0; i < this.size * this.size; i++) {
+            // Sanitize main fields
+            if (!isFinite(this.temperature[i])) {
+              this.temperature[i] = this.params.temperature;
+            }
+            this.temperature[i] = Math.max(-50, Math.min(0, this.temperature[i]));
+
+            if (!isFinite(this.vapor[i])) {
+              this.vapor[i] = this.params.humidity;
+            }
+            this.vapor[i] = Math.max(0, Math.min(5, this.vapor[i]));
+
+            if (!isFinite(this.stress[i])) {
+              this.stress[i] = 0;
+            }
+            this.stress[i] = Math.max(-1, Math.min(1, this.stress[i]));
+
+            if (!isFinite(this.crystallization[i])) {
+              this.crystallization[i] = 0;
+            }
+            this.crystallization[i] = Math.max(0, Math.min(1, this.crystallization[i]));
+
+            // Sanitize airflow
+            if (!isFinite(this.airFlow.vx[i])) {
+              this.airFlow.vx[i] = 0;
+            }
+            this.airFlow.vx[i] = Math.max(-1, Math.min(1, this.airFlow.vx[i]));
+
+            if (!isFinite(this.airFlow.vy[i])) {
+              this.airFlow.vy[i] = 0;
+            }
+            this.airFlow.vy[i] = Math.max(-1, Math.min(1, this.airFlow.vy[i]));
+
+            // Sanitize boundary layer
+            if (!isFinite(this.depositionPhysics.boundaryLayer.thickness[i])) {
+              this.depositionPhysics.boundaryLayer.thickness[i] = 1e-5;
+            }
+            this.depositionPhysics.boundaryLayer.thickness[i] = Math.max(1e-5, Math.min(1e-3, this.depositionPhysics.boundaryLayer.thickness[i]));
+
+            if (!isFinite(this.depositionPhysics.boundaryLayer.velocity[i])) {
+              this.depositionPhysics.boundaryLayer.velocity[i] = 1e-5;
+            }
+            this.depositionPhysics.boundaryLayer.velocity[i] = Math.max(1e-5, Math.min(1, this.depositionPhysics.boundaryLayer.velocity[i]));
+          }
+        }
+
+        generateNewTargetDrift() {
+            // Generate new target drift between -maxDrift and +maxDrift
+            return (Math.random() * 2 - 1) * this.temperatureDrift.maxDrift;
+          }
+
+        updateTemperatureDrift() {
+          // Update drift target periodically
+          if (this.currentStep - this.temperatureDrift.lastUpdate >= this.params.tempDriftInterval) {
+            this.temperatureDrift.target = (Math.random() * 2 - 1) * this.params.tempDriftMagnitude;
+            this.temperatureDrift.lastUpdate = this.currentStep;
+          }
+
+          // Smoothly interpolate current drift toward target
+          const delta = this.temperatureDrift.target - this.temperatureDrift.current;
+          this.temperatureDrift.current += delta * this.params.tempDriftRate;
+
+          // Apply drift to ambient temperature field
+          const baseTemp = this.params.temperature;
+          const center = Math.floor(this.size / 2);
+          
+          for (let i = 0; i < this.size * this.size; i++) {
+            const r = Math.floor(i / this.size);
+            const c = i % this.size;
+            const dr = r - center;
+            const dc = c - center;
+            const dist = Math.sqrt(dr * dr + dc * dc);
+            const distFactor = Math.max(0, 1 - dist / (this.size / 2));
+            
+            // Add some spatial variation to the drift
+            const spatialNoise = this.turbulentNoise(r, c, 0.1) * 0.5;
+            
+            // Temperature varies more at edges than center
+            const driftEffect = this.temperatureDrift.current * (1 - 0.5 * distFactor);
+            
+            this.temperature[i] = baseTemp + driftEffect + spatialNoise;
+          }
+        }   
 
         initializeFailsafe() {
           const center = Math.floor(this.size / 2);
@@ -998,6 +1248,16 @@
           this.surfaceEnergy.fill(1.0);
           this.stress.fill(0);
           this.crystallization[center * this.size + center] = 1.0;
+          for (let i = 0; i < 5; i++) {
+            const angle = (i * Math.PI * 2) / 5;
+            const radius = Math.floor(this.size / 6);
+            const sx = center + Math.floor(radius * Math.cos(angle));
+            const sy = center + Math.floor(radius * Math.sin(angle));
+            const seedIdx = sy * this.size + sx;
+            this.crystallization[seedIdx] = 0.5;
+            this.nucleationSites.add(seedIdx);
+            this.activeCells.add(seedIdx);
+          }
         }
 
         initializeFields(seedVariation) {
@@ -1044,8 +1304,19 @@
 
         stabilize() {
           for (let i = 0; i < this.size * this.size; i++) {
+            if (!isFinite(this.temperature[i])) {
+              this.temperature[i] = this.params.temperature;
+            }
             this.temperature[i] = Math.max(-40, Math.min(0, this.temperature[i]));
+
+            if (!isFinite(this.vapor[i])) {
+              this.vapor[i] = this.params.humidity;
+            }
             this.vapor[i] = Math.max(0, Math.min(5, this.vapor[i]));
+
+            if (!isFinite(this.stress[i])) {
+              this.stress[i] = 0;
+            }
             this.stress[i] = Math.max(-1, Math.min(1, this.stress[i]));
           }
 
@@ -1136,41 +1407,87 @@
 
         createInitialSeed(center, variation) {
           const centerIdx = center * this.size + center;
-          
+
           // Set up initial crystal at center
           this.crystallization[centerIdx] = 1.0;
           this.vapor[centerIdx] = 0;
           this.nucleationSites.add(centerIdx);
-          this.activeCells.add(centerIdx);  // Add this line
+          this.activeCells.add(centerIdx);
 
-          // Add initial points along main crystal axes
-          const mainAngles = [0, Math.PI/3, 2*Math.PI/3, Math.PI, 4*Math.PI/3, 5*Math.PI/3];
+          // Initialize boundary layer and flow fields around center
+          for (let dr = -3; dr <= 3; dr++) {
+            for (let dc = -3; dc <= 3; dc++) {
+              const nr = center + dr;
+              const nc = center + dc;
+              if (this.inBounds(nr, nc)) {
+                const idx = nr * this.size + nc;
+                this.depositionPhysics.boundaryLayer.thickness[idx] = 1e-5;
+                this.depositionPhysics.boundaryLayer.velocity[idx] = 1e-5;
+                this.airFlow.vx[idx] = 1e-5;
+                this.airFlow.vy[idx] = 1e-5;
+              }
+            }
+          }
+
+          // Add initial points along main crystal axes with larger spacing
+          const mainAngles = [0, Math.PI / 3, (2 * Math.PI) / 3, Math.PI, (4 * Math.PI) / 3, (5 * Math.PI) / 3];
           for (const angle of mainAngles) {
-            const dx = Math.round(Math.cos(angle));
-            const dy = Math.round(Math.sin(angle));
+            // Use 2 units spacing instead of 1 for better initial growth
+            const dx = Math.round(2 * Math.cos(angle));
+            const dy = Math.round(2 * Math.sin(angle));
             const px = center + dx;
             const py = center + dy;
-            
+
             if (this.inBounds(py, px)) {
               const idx = py * this.size + px;
-              this.crystallization[idx] = 0.6;
-              this.vapor[idx] = 0;
+              this.crystallization[idx] = 0.3; // Reduced initial crystallization
+              this.vapor[idx] = this.params.humidity * 0.5; // Allow some vapor
               this.nucleationSites.add(idx);
-              this.activeCells.add(idx);  // Add this line
-              
-              // Add activeCells for immediate neighbors
-              for (let dr = -1; dr <= 1; dr++) {
-                for (let dc = -1; dc <= 1; dc++) {
+              this.activeCells.add(idx);
+
+              // Add a wider neighborhood of active cells
+              for (let dr = -2; dr <= 2; dr++) {
+                for (let dc = -2; dc <= 2; dc++) {
                   const nr = py + dr;
                   const nc = px + dc;
                   if (this.inBounds(nr, nc)) {
                     const nidx = nr * this.size + nc;
+                    this.activeCells.add(nidx);
+
+                    // Add some randomness to vapor field in active region
                     if (!this.nucleationSites.has(nidx)) {
-                      this.activeCells.add(nidx);
+                      this.vapor[nidx] = this.params.humidity * (0.8 + 0.4 * Math.random());
                     }
+
+                    // Initialize boundary layer and flow fields
+                    this.depositionPhysics.boundaryLayer.thickness[nidx] = 1e-5;
+                    this.depositionPhysics.boundaryLayer.velocity[nidx] = 1e-5;
+                    this.airFlow.vx[nidx] = 1e-5;
+                    this.airFlow.vy[nidx] = 1e-5;
                   }
                 }
               }
+            }
+          }
+
+          // Add some intermediate points for better connectivity
+          for (let i = 0; i < mainAngles.length; i++) {
+            const angle = mainAngles[i] + Math.PI / 6; // 30 degree offset
+            const dx = Math.round(1.5 * Math.cos(angle));
+            const dy = Math.round(1.5 * Math.sin(angle));
+            const px = center + dx;
+            const py = center + dy;
+
+            if (this.inBounds(py, px)) {
+              const idx = py * this.size + px;
+              this.activeCells.add(idx);
+              this.vapor[idx] = this.params.humidity * 0.7;
+
+              // Initialize boundary layer and flow fields for intermediate points too
+              this.depositionPhysics.boundaryLayer.thickness[idx] = 1e-5;
+              this.depositionPhysics.boundaryLayer.velocity[idx] = 1e-5;
+              this.airFlow.vx[idx] = 1e-5;
+              this.airFlow.vy[idx] = 1e-5;
             }
           }
         }
@@ -1184,6 +1501,8 @@
           const startTime = performance.now();
 
           try {
+            // Validate and sanitize before processing
+            this.sanitizeFields();
             // Validate simulation state
             if (!this.crystallization || !this.temperature || !this.vapor) {
               throw new Error('Simulation arrays not properly initialized');
@@ -1204,6 +1523,7 @@
 
             // Increment step counter
             this.currentStep = Math.min(this.steps, this.currentStep + 1);
+            this.updateTemperatureDrift();
 
             console.log('Updating crystallization...');
             const crystalStart = performance.now();
@@ -1218,10 +1538,16 @@
               console.log(`Air flow update took ${performance.now() - airStart}ms`);
             }
 
+            // Sanitize after flow update
+            this.sanitizeFields();
+
             console.log('Updating vapor field...');
             const vaporStart = performance.now();
             this.depositionPhysics.vaporField.update(this.crystallization, this.temperature, this.airFlow);
             console.log(`Vapor field update took ${performance.now() - vaporStart}ms`);
+
+            // Sanitize after vapor update
+            this.sanitizeFields();
 
             console.log('Updating defect system...');
             const defectStart = performance.now();
@@ -1255,7 +1581,6 @@
           console.log(`Step ${this.currentStep} completed in ${totalTime}ms`);
         }
 
-        // Add validation method
         validateState() {
           const validationResults = {
             crystallization: this.validateArray(this.crystallization, 'crystallization'),
@@ -1263,6 +1588,22 @@
             vapor: this.validateArray(this.vapor, 'vapor'),
             stress: this.validateArray(this.stress, 'stress'),
           };
+
+          // Reset any invalid values to defaults
+          for (let i = 0; i < this.size * this.size; i++) {
+            if (!isFinite(this.temperature[i])) {
+              this.temperature[i] = this.params.temperature;
+            }
+            if (!isFinite(this.vapor[i])) {
+              this.vapor[i] = this.params.humidity;
+            }
+            if (!isFinite(this.stress[i])) {
+              this.stress[i] = 0;
+            }
+            if (!isFinite(this.crystallization[i])) {
+              this.crystallization[i] = 0;
+            }
+          }
 
           console.log('Validation results:', validationResults);
           return Object.values(validationResults).every((result) => result.valid);
@@ -1328,13 +1669,13 @@
                 this.nucleationSites.add(centerIdx);
 
                 // Add initial points along axes for better growth
-                const mainAngles = [0, Math.PI/3, 2*Math.PI/3, Math.PI, 4*Math.PI/3, 5*Math.PI/3];
+                const mainAngles = [0, Math.PI / 3, (2 * Math.PI) / 3, Math.PI, (4 * Math.PI) / 3, (5 * Math.PI) / 3];
                 for (const angle of mainAngles) {
                   const dx = Math.round(Math.cos(angle));
                   const dy = Math.round(Math.sin(angle));
                   const px = center + dx;
                   const py = center + dy;
-                  
+
                   if (this.inBounds(py, px)) {
                     const idx = py * this.size + px;
                     this.crystallization[idx] = 0.6;
@@ -1352,6 +1693,11 @@
               console.warn('No active cells to process');
               return;
             }
+
+            // FIX: Compute a stable dt once, ensuring it's never too small
+            let dt = this.adaptiveTimeStep();
+            dt = Math.min(0.1, dt);
+            dt = Math.max(dt, 1e-4); // minimum dt to ensure growth is not negligible
 
             // Process cells with enhanced error checking
             const cells = Array.from(activeCells);
@@ -1417,7 +1763,7 @@
                       }
 
                       if (depositionRate > 0) {
-                        const dt = Math.min(0.1, this.adaptiveTimeStep());
+                        // Use the stable dt computed once
                         const growth = Math.max(0, Math.min(0.1, depositionRate * dt));
 
                         const oldCrystal = this.crystallization[neighborIndex];
@@ -1427,7 +1773,7 @@
                           this.crystallization[neighborIndex] = newCrystal;
                           this.releaseLatentHeat(neighborIndex, newCrystal - oldCrystal);
                           nextActiveCells.add(neighborIndex);
-                          
+
                           // Add diagonal neighbors for better coverage
                           for (let ddr = -1; ddr <= 1; ddr++) {
                             for (let ddc = -1; ddc <= 1; ddc++) {
@@ -1457,10 +1803,15 @@
                 if (processedCells % maxCellsPerChunk === 0) {
                   console.log(`Processed ${processedCells}/${cells.length} cells`);
 
-                  // Check processing time
+                  // Originally, this code breaks if too long:
+                  // if (performance.now() - startTime > 100) {
+                  //   console.warn('Processing timeout, will continue next frame');
+                  //   break;
+                  // }
+
+                  // FIX: Do not break. Just warn, but continue. We must complete a full iteration
                   if (performance.now() - startTime > 100) {
-                    console.warn('Processing timeout, will continue next frame');
-                    break;
+                    console.warn('Processing took longer than 100ms, but continuing anyway to ensure full growth update.');
                   }
                 }
               } catch (error) {
@@ -1485,25 +1836,28 @@
             }
 
             // Update active cells with better fallback
-            this.activeCells = nextActiveCells.size > 0 ? 
-              nextActiveCells : 
-              new Set([...this.nucleationSites].filter((idx) => {
-                // Include cells that are crystallized or have crystallized neighbors
-                if (this.crystallization[idx] > 0) return true;
-                const r = Math.floor(idx / this.size);
-                const c = idx % this.size;
-                for (let dr = -1; dr <= 1; dr++) {
-                  for (let dc = -1; dc <= 1; dc++) {
-                    const nr = r + dr;
-                    const nc = c + dc;
-                    if (this.inBounds(nr, nc)) {
-                      const nidx = nr * this.size + nc;
-                      if (this.crystallization[nidx] > 0.5) return true;
-                    }
-                  }
-                }
-                return false;
-              }));
+            this.activeCells =
+              nextActiveCells.size > 0
+                ? nextActiveCells
+                : new Set(
+                    [...this.nucleationSites].filter((idx) => {
+                      // Include cells that are crystallized or have crystallized neighbors
+                      if (this.crystallization[idx] > 0) return true;
+                      const r = Math.floor(idx / this.size);
+                      const c = idx % this.size;
+                      for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                          const nr = r + dr;
+                          const nc = c + dc;
+                          if (this.inBounds(nr, nc)) {
+                            const nidx = nr * this.size + nc;
+                            if (this.crystallization[nidx] > 0.5) return true;
+                          }
+                        }
+                      }
+                      return false;
+                    })
+                  );
 
             console.log('Update completed:', {
               processedCells,
@@ -1519,6 +1873,7 @@
             this.arrayPool.release(vaporField);
           }
         }
+
 
         // Helper method to safely check bounds
         inBounds(r, c) {
@@ -1567,7 +1922,7 @@
         releaseLatentHeat(idx, amount) {
           const r = Math.floor(idx / this.size);
           const c = idx % this.size;
-          const heatAmount = Math.max(0, amount * this.params.latentHeatRelease * PHYSICAL_CONSTANTS.WATER_LATENT_HEAT);
+          const heatAmount = Math.max(0, amount * this.params.latentHeatRelease * PHYSICAL_CONSTANTS.WATER_LATENT_HEAT * 0.1);
 
           const radius = 5;
           const centerTemp = this.temperature[idx];
@@ -1816,6 +2171,26 @@
           this.applyBoundaryEffects(crystallization);
           this.applyIncompressibility();
 
+          // Add velocity normalization and clamping
+          const maxVelocity = 1.0; // Maximum allowed velocity
+          for (let i = 0; i < this.size * this.size; i++) {
+            // Calculate velocity magnitude
+            const vx = this.vx[i];
+            const vy = this.vy[i];
+            const magnitude = Math.sqrt(vx * vx + vy * vy);
+
+            if (magnitude > maxVelocity) {
+              // Normalize and scale to max velocity
+              const scale = maxVelocity / magnitude;
+              this.vx[i] *= scale;
+              this.vy[i] *= scale;
+            }
+
+            // Additional safety clamp
+            this.vx[i] = Math.max(-maxVelocity, Math.min(maxVelocity, this.vx[i]));
+            this.vy[i] = Math.max(-maxVelocity, Math.min(maxVelocity, this.vy[i]));
+          }
+
           // Example of adding a subtle swirling motion
           const swirlFactor = 0.001;
           const centerX = Math.floor(this.size / 2);
@@ -1823,10 +2198,12 @@
 
           for (let r = 0; r < this.size; r++) {
             for (let c = 0; c < this.size; c++) {
+              const idx = r * this.size + c;
               const dx = c - centerX;
               const dy = r - centerY;
-              this.vx[r * this.size + c] += dy * swirlFactor;
-              this.vy[r * this.size + c] -= dx * swirlFactor;
+              // Add swirl but maintain velocity constraints
+              this.vx[idx] = Math.max(-maxVelocity, Math.min(maxVelocity, this.vx[idx] + dy * swirlFactor));
+              this.vy[idx] = Math.max(-maxVelocity, Math.min(maxVelocity, this.vy[idx] - dx * swirlFactor));
             }
           }
         }
@@ -1897,6 +2274,7 @@
         applyIncompressibility() {
           let maxDivergence = 1.0;
           let iter = 0;
+          const relaxationFactor = 0.1; // Reduced from previous value for stability
 
           while (maxDivergence > this.convergenceThreshold && iter < this.iterations) {
             maxDivergence = 0;
@@ -1909,13 +2287,22 @@
 
                 maxDivergence = Math.max(maxDivergence, Math.abs(div));
 
-                this.pressure[idx] -= div * 0.1;
+                // Apply pressure correction with relaxation factor
+                this.pressure[idx] -= div * relaxationFactor;
 
-                const gradientScale = 0.5;
-                this.vx[idx - 1] += this.pressure[idx] * gradientScale;
-                this.vx[idx + 1] -= this.pressure[idx] * gradientScale;
-                this.vy[idx - this.size] += this.pressure[idx] * gradientScale;
-                this.vy[idx + this.size] -= this.pressure[idx] * gradientScale;
+                // Limit pressure values
+                this.pressure[idx] = Math.max(-1.0, Math.min(1.0, this.pressure[idx]));
+
+                const gradientScale = 0.5 * relaxationFactor;
+                // Apply velocity corrections with limits
+                const maxCorrection = 0.1;
+                const vxCorr = Math.max(-maxCorrection, Math.min(maxCorrection, this.pressure[idx] * gradientScale));
+                const vyCorr = Math.max(-maxCorrection, Math.min(maxCorrection, this.pressure[idx] * gradientScale));
+
+                this.vx[idx - 1] += vxCorr;
+                this.vx[idx + 1] -= vxCorr;
+                this.vy[idx - this.size] += vyCorr;
+                this.vy[idx + this.size] -= vyCorr;
               }
             }
 
@@ -2311,20 +2698,20 @@
       let currentStep = 0;
 
       const controls = {
-        temperature: -15,
-        humidity: 2.5,
-        growthSpeed: 0.8,
-        branchingFactor: 0.95,
-        noiseIntensity: 0.08,
-        crystalCore: 0.4,
-        edgeStability: 0.95,
-        diffusionRate: 0.4,
-        latentHeatRelease: 0.02,
-        airFlowIntensity: 0.3,
-        defectProbability: 0.1,
-        surfaceAnisotropy: 0.5,
-        boundaryLayerEffect: 0.3,
-        kineticCoefficient: 0.1,
+        temperature: -18, // Keep this as baseline
+        humidity: 3.5,    // Increase baseline supersaturation
+        growthSpeed: 0.6, // Reduce for more detailed features
+        branchingFactor: 0.98, // Increase hexagonal preference
+        noiseIntensity: 0.05,  // Reduce random noise
+        crystalCore: 0.6,      // Larger initial seed
+        edgeStability: 0.98,   // More stable edges
+        diffusionRate: 0.4,    // Slower diffusion
+        latentHeatRelease: 0.005, // More local heating effects
+        airFlowIntensity: 0.2,    // Gentler flow
+        defectProbability: 0.05,  // Fewer defects
+        surfaceAnisotropy: 0.8,   // Stronger crystal axis preference 
+        boundaryLayerEffect: 0.4,  // Stronger boundary layer
+        kineticCoefficient: 0.08,  // Slower attachment kinetics
         adaptiveTimeStepping: true,
         visualDetail: 'high',
       };
@@ -2410,6 +2797,7 @@
           try {
             PerformanceMonitor.start('render');
             renderer.draw(simulator, renderer.canvas.width, renderer.canvas.height);
+            updateStatisticsPanel(simulator);
             PerformanceMonitor.end('render');
           } catch (error) {
             console.error('Render error:', error);
@@ -2556,6 +2944,176 @@
         }
       }
 
+
+      function isSecondaryBranch(idx, simulator) {
+        const r = Math.floor(idx / simulator.size);
+        const c = idx % simulator.size;
+        let connectedComponents = 0;
+        
+        // Count number of connected crystallized regions
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            if (dr === 0 && dc === 0) continue;
+            const nr = r + dr;
+            const nc = c + dc;
+            if (simulator.inBounds(nr, nc)) {
+              const nidx = nr * simulator.size + nc;
+              if (simulator.crystallization[nidx] > 0.5) {
+                connectedComponents++;
+              }
+            }
+          }
+        }
+        
+        // Secondary branches typically have 1-2 connections
+        return connectedComponents <= 2;
+      }
+
+      function isPerimeterCell(idx, simulator) {
+        const r = Math.floor(idx / simulator.size);
+        const c = idx % simulator.size;
+        
+        // Check if this cell has any non-crystallized neighbors
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            if (dr === 0 && dc === 0) continue;
+            const nr = r + dr;
+            const nc = c + dc;
+            if (simulator.inBounds(nr, nc)) {
+              const nidx = nr * simulator.size + nc;
+              if (simulator.crystallization[nidx] < 0.5) {
+                return true;
+              }
+            }
+          }
+        }
+        return false;
+      }
+
+      function updateStatisticsPanel(simulator) {
+        if (!simulator) return;
+        
+        // Basic statistics
+        let crystalCount = 0;
+        let sumCrystallization = 0;
+        let sumTemperature = 0;
+        let sumVapor = 0;
+        
+        // Advanced metrics
+        let primaryBranchLength = 0;
+        let secondaryBranchCount = 0;
+        let maxRadius = 0;
+        let surfaceArea = 0;
+        let boundaryLayerThickness = 0;
+        let defectDensity = 0;
+        let averageStress = 0;
+        let growthSymmetry = 0;
+        
+        const center = Math.floor(simulator.size / 2);
+        const totalCells = simulator.size * simulator.size;
+
+        // Calculate hexagonal sectors for symmetry analysis
+        const sectors = Array(6).fill(0);
+        
+        // Main data collection loop
+        for (let r = 0; r < simulator.size; r++) {
+          for (let c = 0; c < simulator.size; c++) {
+            const idx = r * simulator.size + c;
+            const crys = simulator.crystallization[idx];
+            
+            sumCrystallization += crys;
+            if (crys > 0.5) {
+              crystalCount++;
+              
+              // Calculate distance from center
+              const dr = r - center;
+              const dc = c - center;
+              const dist = Math.sqrt(dr * dr + dc * dc);
+              maxRadius = Math.max(maxRadius, dist);
+              
+              // Determine sector (0-5) and accumulate mass
+              const angle = Math.atan2(dr, dc);
+              const sector = Math.floor(((angle + Math.PI) * 3) / Math.PI) % 6;
+              sectors[sector] += crys;
+              
+              if (isSecondaryBranch(idx, simulator)) {
+                secondaryBranchCount++;
+              }
+              
+              if (isPerimeterCell(idx, simulator)) {
+                surfaceArea++;
+              }
+            }
+            
+            sumTemperature += simulator.temperature[idx];
+            sumVapor += simulator.vapor[idx];
+            
+            if (simulator.defectSystem) {
+              defectDensity += simulator.defectSystem.defects[idx];
+            }
+            if (simulator.stress) {
+              averageStress += Math.abs(simulator.stress[idx]);
+            }
+            if (simulator.depositionPhysics?.boundaryLayer) {
+              boundaryLayerThickness += simulator.depositionPhysics.boundaryLayer.thickness[idx];
+            }
+          }
+        }
+        
+        // Calculate final values
+        const avgCrystallization = sumCrystallization / totalCells;
+        const avgTemperature = sumTemperature / totalCells;
+        const avgVapor = sumVapor / totalCells;
+        const defectPercentage = (defectDensity / crystalCount) * 100;
+        const avgStress = averageStress / crystalCount;
+        const boundaryThickness = (boundaryLayerThickness / crystalCount) * 1e6;
+        
+        // Calculate growth symmetry (0-1, where 1 is perfect symmetry)
+        const avgSectorMass = sectors.reduce((a, b) => a + b, 0) / 6;
+        const maxDeviation = sectors.reduce((max, mass) => Math.max(max, Math.abs(mass - avgSectorMass)), 0);
+        growthSymmetry = 1 - (maxDeviation / avgSectorMass);
+
+        // Update DOM elements and visual elements together
+        const updates = {
+          'statCrystallized': crystalCount,
+          'statAvgCrystallization': avgCrystallization.toFixed(4),
+          'statAvgTemperature': avgTemperature.toFixed(2),
+          'statAvgVapor': avgVapor.toFixed(3),
+          'statMaxRadius': maxRadius.toFixed(1),
+          'statSecondaryBranches': secondaryBranchCount,
+          'statSurfaceArea': surfaceArea,
+          'statSymmetry': (growthSymmetry * 100).toFixed(1),
+          'statDefectDensity': defectPercentage.toFixed(1),
+          'statAverageStress': avgStress.toFixed(3),
+          'statBoundaryLayer': boundaryThickness.toFixed(1),
+          'statStep': simulator.currentStep
+        };
+
+        // Update all stats and their associated visual elements
+        Object.entries(updates).forEach(([id, value]) => {
+          const element = document.getElementById(id);
+          if (element) {
+            if (id === 'statDefectDensity') {
+              // Update both text and progress bar
+              element.textContent = `${value}%`;
+              const bar = document.getElementById('defectDensityBar');
+              if (bar) {
+                const percentage = parseFloat(value);
+                bar.style.width = `${percentage}%`;
+                // Update bar color based on value
+                bar.className = 'h-2 rounded-full transition-all duration-300 bg-gradient-to-r ' + 
+                  (percentage < 30 ? 'from-blue-500 to-indigo-500' :
+                   percentage < 70 ? 'from-yellow-500 to-orange-500' :
+                                    'from-red-500 to-red-700');
+              }
+            } else {
+              // Regular stat update
+              element.textContent = value;
+            }
+          }
+        });
+      }
+
       // Performance monitoring wrapper
       const PerformanceMonitor = {
         metrics: new Map(),
@@ -2683,6 +3241,7 @@
         document.body.appendChild(errorDiv);
         setTimeout(() => errorDiv.remove(), 5000);
       }
+
 
       document.addEventListener('DOMContentLoaded', () => {
         try {
